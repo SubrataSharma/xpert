@@ -27,10 +27,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "You have clicked tittle", Toast.LENGTH_LONG).show();
-                Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
-                startActivity(in);
-                finish();
             }
         });
+    }
+
+    public void funFacts(View view) {
+        Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
+        startActivity(in);
+        finish();
     }
 }

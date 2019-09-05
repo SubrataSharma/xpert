@@ -1,14 +1,39 @@
 package com.pabitrarista.chatdialog;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class AskScreen2Activity extends AppCompatActivity {
+
+    FirebaseFirestore db;
+    private static final String XPERT_MASTER_KEY = "xpert_master";
+    private static final String A_R_RAHMAN_KEY = "a-r-rahman";
+    private static final String SACHIN_BANSAL = "sachin-bansal";
+    private static final String RESPONSE_KEY = "responses";
+    private static final String BUCKET_1_KEY = "bucket1";
+    private static final String BUCKET_2_KEY = "bucket2";
+    private static final String BUCKET_3_KEY = "bucket3";
+
+    TextView textView;
+    TextView textView1, textView2, textView3, textView4, textView5, textView6, textView7, textView8, textView9;
+    LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,5 +55,123 @@ public class AskScreen2Activity extends AppCompatActivity {
                 finish();
             }
         });
+
+        init();
+        linearLayout.setVisibility(View.GONE);
+
+        Query bucket2Personality = db.collection(XPERT_MASTER_KEY)
+                .document(SACHIN_BANSAL)
+                .collection(RESPONSE_KEY)
+                .whereEqualTo(BUCKET_1_KEY, "exp")
+                .whereEqualTo(BUCKET_2_KEY, "personality");
+
+        Query bucket2Opinion = db.collection(XPERT_MASTER_KEY)
+                .document(SACHIN_BANSAL)
+                .collection(RESPONSE_KEY)
+                .whereEqualTo(BUCKET_1_KEY, "exp")
+                .whereEqualTo(BUCKET_2_KEY, "opinion");
+
+        Query bucket2Journey = db.collection(XPERT_MASTER_KEY)
+                .document(SACHIN_BANSAL)
+                .collection(RESPONSE_KEY)
+                .whereEqualTo(BUCKET_1_KEY, "exp")
+                .whereEqualTo(BUCKET_2_KEY, "journey");
+
+        Query bucket2Pro = db.collection(XPERT_MASTER_KEY)
+                .document(SACHIN_BANSAL)
+                .collection(RESPONSE_KEY)
+                .whereEqualTo(BUCKET_1_KEY, "exp")
+                .whereEqualTo(BUCKET_2_KEY, "pro");
+
+        bucket2Personality.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    String[] bucket3Content = new String[60];
+                    int i = 0;
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (i == 0) {
+                            linearLayout.setVisibility(View.VISIBLE);
+                            bucket3Content[i] = document.getString(BUCKET_3_KEY);
+                            setTxt(i, bucket3Content[i]);
+                            textView.append(bucket3Content[i]);
+                            i++;
+                        } else {
+                            bucket3Content[i] = document.getString(BUCKET_3_KEY);
+                            if (!bucket3Content[i].equals(bucket3Content[i - 1])) {
+                                setTxt(i, bucket3Content[i]);
+                                textView.append("\n\n" + bucket3Content[i]);
+                                i++;
+                            }
+                        }
+                        //Log.d(TAG, document.getId() + " => " + document.getData());
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+//        db.collection(XPERT_MASTER_KEY)
+//                .document(A_R_RAHMAN_KEY)
+//                .collection(RESPONSE_KEY)
+//                .document("exp_journey_first_day")
+//                .get()
+//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        String bucket2 = documentSnapshot.getString("bucket1");
+//                        textView.setText(bucket2 + "");
+//                    }
+//                });
+    }
+
+    private void init() {
+        db = FirebaseFirestore.getInstance();
+
+        textView = findViewById(R.id.textView);
+        textView1 = findViewById(R.id.textView1);
+        textView2 = findViewById(R.id.textView2);
+        textView3 = findViewById(R.id.textView3);
+        textView4 = findViewById(R.id.textView4);
+        textView5 = findViewById(R.id.textView5);
+        textView6 = findViewById(R.id.textView6);
+        textView7 = findViewById(R.id.textView7);
+        textView8 = findViewById(R.id.textView8);
+        textView9 = findViewById(R.id.textView9);
+        linearLayout = findViewById(R.id.ask_screen2_linear_layout_1);
+    }
+
+    private void setTxt(int i, String str) {
+        switch (i) {
+            case 0:
+                textView1.setText(str);
+                break;
+            case 1:
+                textView2.setText(str);
+                break;
+            case 2:
+                textView3.setText(str);
+                break;
+            case 3:
+                textView4.setText(str);
+                break;
+            case 4:
+                textView5.setText(str);
+                break;
+            case 5:
+                textView6.setText(str);
+                break;
+            case 6:
+                textView7.setText(str);
+                break;
+            case 7:
+                textView8.setText(str);
+                break;
+            case 8:
+                textView9.setText(str);
+                break;
+        }
     }
 }
