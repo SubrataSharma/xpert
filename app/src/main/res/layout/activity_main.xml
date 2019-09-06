@@ -7,6 +7,27 @@
     android:layout_margin="10dp"
     tools:context=".MainActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="150dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom">
+
+            <TextView
+                android:id="@+id/main_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#000000" />
+        </LinearLayout>
+    </ScrollView>
+
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,10 +56,10 @@
                     app:cardElevation="0dp">
 
                     <RelativeLayout
-                        android:onClick="funFacts"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/cricket" />
+                        android:background="@drawable/cricket"
+                        android:onClick="funFacts" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -154,6 +175,7 @@
                 android:src="@drawable/icon_smile" />
 
             <EditText
+                android:id="@+id/main_editText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".75"
@@ -167,6 +189,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_marginStart="5dp"
+                android:onClick="sendMsg"
                 android:src="@drawable/icon_send" />
         </LinearLayout>
 

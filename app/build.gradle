@@ -21,6 +21,8 @@ android {
 }
 
 dependencies {
+    compile 'ai.api:sdk:2.0.7@aar'
+    compile 'ai.api:libai:1.6.12'
     implementation 'com.google.firebase:firebase-core:17.2.0'
     implementation 'com.google.firebase:firebase-firestore:21.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
