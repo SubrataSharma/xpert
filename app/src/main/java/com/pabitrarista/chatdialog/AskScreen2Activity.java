@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,10 +60,10 @@ public class AskScreen2Activity extends AppCompatActivity implements View.OnClic
         getSupportActionBar().setElevation(0);
         View view = getSupportActionBar().getCustomView();
 
-        TextView name = view.findViewById(R.id.name);
-        name.setOnClickListener(new View.OnClickListener() {
+        ImageView back = view.findViewById(R.id.custom_action_bar2_back);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 Intent in2 = new Intent(AskScreen2Activity.this, MainActivity.class);
                 startActivity(in2);
                 finish();
