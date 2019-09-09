@@ -3,17 +3,30 @@ package com.pabitrarista.chatdialog;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.List;
+
 import ai.api.AIListener;
+import ai.api.AIServiceException;
+import ai.api.RequestExtras;
 import ai.api.android.AIConfiguration;
+import ai.api.android.AIDataService;
 import ai.api.android.AIService;
+import ai.api.model.AIContext;
 import ai.api.model.AIError;
+import ai.api.model.AIEvent;
+import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.model.Result;
 
@@ -23,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     TextView textView;
 
     AIService aiService;
+    AIDataService aiDataService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
         aiService = AIService.getService(this, config);
         aiService.setListener(this);
+        aiDataService = new AIDataService(this, config);
     }
 
     public void funFacts(View view) {
@@ -67,7 +82,9 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     public void sendMsg(View view) {
         String msg = editText.getText().toString().toString();
         if (!msg.equals("")) {
-            aiService.startListening();
+            new AiTask(this, aiDataService, textView).execute(msg, "", "");
+            editText.setText("");
+//            aiService.startListening();
 //            textView.append(msg + "\n\n");
         }
     }
@@ -102,5 +119,60 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     @Override
     public void onListeningFinished() {
 
+    }
+}
+
+class AiTask extends AsyncTask<String, Void, AIResponse> {
+
+    private final WeakReference<Context> context;
+    private final AIDataService aiService;
+    TextView textView;
+
+    public AiTask(Context context, AIDataService aiService, TextView textView) {
+        this.context = new WeakReference<>(context);
+        this.aiService = aiService;
+        this.textView = textView;
+    }
+
+    @Override
+    protected void onPreExecute() {
+    }
+
+    @Override
+    protected AIResponse doInBackground(final String... params) {
+        AIRequest request = new AIRequest();
+        String query = params[0];
+        String event = params[1];
+        String context = params[2];
+
+        if (!TextUtils.isEmpty(query)) {
+            request.setQuery(query);
+        }
+
+        if (!TextUtils.isEmpty(event)) {
+            request.setEvent(new AIEvent(event));
+        }
+
+        RequestExtras requestExtras = null;
+        if (!TextUtils.isEmpty(context)) {
+            final List<AIContext> contexts = Collections.singletonList(new AIContext(context));
+            requestExtras = new RequestExtras(contexts, null);
+        }
+
+        try {
+            return aiService.request(request, requestExtras);
+        } catch (final AIServiceException e) {
+            return null;
+        }
+    }
+
+    @Override
+    protected void onPostExecute(final AIResponse response) {
+        if (response != null) {
+            final Result result = response.getResult();
+            final String speech = result.getFulfillment().getSpeech();
+            //Toast.makeText(context.get(), speech, Toast.LENGTH_LONG).show();
+            textView.append("\n\n" + result.getResolvedQuery() + "\n" + speech);
+        }
     }
 }
