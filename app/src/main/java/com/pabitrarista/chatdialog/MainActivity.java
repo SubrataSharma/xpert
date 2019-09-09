@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "You have clicked tittle", Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this, "You have clicked tittle", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     public void sendMsg(View view) {
         String msg = editText.getText().toString().toString();
         if (!msg.equals("")) {
+            textView.append("\n\n" + msg);
             new AiTask(this, aiDataService, textView).execute(msg, "", "");
             editText.setText("");
 //            aiService.startListening();
@@ -172,7 +173,8 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
             final Result result = response.getResult();
             final String speech = result.getFulfillment().getSpeech();
             //Toast.makeText(context.get(), speech, Toast.LENGTH_LONG).show();
-            textView.append("\n\n" + result.getResolvedQuery() + "\n" + speech);
+            //result.getResolvedQuery()
+            textView.append("\n" + speech);
         }
     }
 }

@@ -5,13 +5,14 @@
     android:background="@color/colorPrimary">
 
     <ImageView
+        android:id="@+id/custom_action_bar2_back"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
         android:src="@drawable/icon_arrow" />
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/custom_action_bar2_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
