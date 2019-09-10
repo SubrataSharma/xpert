@@ -8,27 +8,29 @@
     tools:context=".MainActivity">
 
     <ScrollView
+        android:id="@+id/main_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="150dp">
+        android:layout_above="@+id/main_linear_layout">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/main_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="60dp"
                 android:text=""
+                android:textAllCaps="false"
                 android:textColor="#000000" />
         </LinearLayout>
     </ScrollView>
 
 
     <LinearLayout
+        android:id="@+id/main_linear_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

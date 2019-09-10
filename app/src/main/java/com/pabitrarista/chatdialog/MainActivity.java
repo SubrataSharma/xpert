@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     EditText editText;
     TextView textView;
+    ScrollView scrollView;
 
     AIService aiService;
     AIDataService aiDataService;
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private void init() {
         editText = findViewById(R.id.main_editText);
         textView = findViewById(R.id.main_textView);
+        scrollView = findViewById(R.id.main_scroll_view);
 
         final AIConfiguration config = new AIConfiguration("5a28a24679e6411699636dc44558724c",
                 AIConfiguration.SupportedLanguages.English,
@@ -83,8 +86,9 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         String msg = editText.getText().toString().toString();
         if (!msg.equals("")) {
             textView.append("\n\n" + msg);
-            new AiTask(this, aiDataService, textView).execute(msg, "", "");
+            new AiTask(this, aiDataService, textView, scrollView).execute(msg, "", "");
             editText.setText("");
+            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
 //            aiService.startListening();
 //            textView.append(msg + "\n\n");
         }
@@ -128,11 +132,13 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
     private final WeakReference<Context> context;
     private final AIDataService aiService;
     TextView textView;
+    ScrollView scrollView;
 
-    public AiTask(Context context, AIDataService aiService, TextView textView) {
+    public AiTask(Context context, AIDataService aiService, TextView textView, ScrollView scrollView) {
         this.context = new WeakReference<>(context);
         this.aiService = aiService;
         this.textView = textView;
+        this.scrollView = scrollView;
     }
 
     @Override
@@ -175,6 +181,7 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
             //Toast.makeText(context.get(), speech, Toast.LENGTH_LONG).show();
             //result.getResolvedQuery()
             textView.append("\n" + speech);
+            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
         }
     }
 }
