@@ -74,7 +74,7 @@ public class AskScreen2Activity extends AppCompatActivity implements View.OnClic
         linearLayout.setVisibility(View.GONE);
 
         Query bucket2Personality = db.collection(XPERT_MASTER_KEY)
-                .document(SACHIN_BANSAL)
+                .document(A_R_RAHMAN_KEY)
                 .collection(RESPONSE_KEY)
                 .whereEqualTo(BUCKET_1_KEY, "exp")
                 .whereEqualTo(BUCKET_2_KEY, "personality");

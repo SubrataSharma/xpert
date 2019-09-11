@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/ask_screen2_linear_layout_1"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="visible">
 
@@ -129,15 +129,16 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/ask_screen2_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignBottom="@+id/ask_screen2_linear_layout_1"
+        android:layout_below="@+id/ask_screen2_linear_layout_1"
         android:background="#000" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="132dp" />
+        android:layout_below="@+id/ask_screen2_view" />
 
 </RelativeLayout>

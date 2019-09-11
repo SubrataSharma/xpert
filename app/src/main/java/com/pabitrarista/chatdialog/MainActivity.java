@@ -2,6 +2,8 @@ package com.pabitrarista.chatdialog;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,6 +39,11 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     EditText editText;
     TextView textView;
     ScrollView scrollView;
+    RecyclerView recyclerView;
+    LinearLayoutManager linearLayoutManager;
+    // Create the initial data list.
+    final List<MsgSendReceive> msgDtoList = new ArrayList<>();
+    MsgAdapter msgAdapter;
 
     AIService aiService;
     AIDataService aiDataService;
@@ -67,6 +75,17 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         textView = findViewById(R.id.main_textView);
         scrollView = findViewById(R.id.main_scroll_view);
 
+        recyclerView = findViewById(R.id.main_recycler_view);
+        linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        MsgSendReceive msgDto = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, "");
+        msgDtoList.add(msgDto);
+        // Create the data adapter with above data list.
+        msgAdapter = new MsgAdapter(msgDtoList);
+        // Set data adapter to RecyclerView.
+        recyclerView.setAdapter(msgAdapter);
+
         final AIConfiguration config = new AIConfiguration("5a28a24679e6411699636dc44558724c",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
@@ -83,10 +102,19 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     public void sendMsg(View view) {
-        String msg = editText.getText().toString().toString();
+        String msg = editText.getText().toString().trim();
         if (!msg.equals("")) {
+            // Add a new sent message to the list.
+            MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_SENT, msg);
+            msgDtoList.add(msgDto1);
+            int newMsgPosition = msgDtoList.size() - 1;
+            // Notify recycler view insert one new data.
+            msgAdapter.notifyItemInserted(newMsgPosition);
+            // Scroll RecyclerView to the last message.
+            recyclerView.scrollToPosition(newMsgPosition);
+
             textView.append("\n\n" + msg);
-            new AiTask(this, aiDataService, textView, scrollView).execute(msg, "", "");
+            new AiTask(this, aiDataService, textView, scrollView, msgAdapter, msgDtoList, recyclerView).execute(msg, "", "");
             editText.setText("");
             scrollView.fullScroll(ScrollView.FOCUS_DOWN);
 //            aiService.startListening();
@@ -133,12 +161,18 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
     private final AIDataService aiService;
     TextView textView;
     ScrollView scrollView;
+    MsgAdapter msgAdapter;
+    RecyclerView recyclerView;
+    List<MsgSendReceive> msgDtoList;
 
-    public AiTask(Context context, AIDataService aiService, TextView textView, ScrollView scrollView) {
+    public AiTask(Context context, AIDataService aiService, TextView textView, ScrollView scrollView, MsgAdapter msgAdapter, List<MsgSendReceive> msgDtoList, RecyclerView recyclerView) {
         this.context = new WeakReference<>(context);
         this.aiService = aiService;
         this.textView = textView;
         this.scrollView = scrollView;
+        this.msgAdapter = msgAdapter;
+        this.recyclerView = recyclerView;
+        this.msgDtoList = msgDtoList;
     }
 
     @Override
@@ -182,6 +216,23 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
             //result.getResolvedQuery()
             textView.append("\n" + speech);
             scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+
+            if (result.getResolvedQuery().equals("Image")) {
+                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_IMAGE, "http://rma-upload.s3.amazonaws.com/2019_08_22_11_11_59banner.png");
+                msgDtoList.add(msgDto1);
+                int newMsgPosition = msgDtoList.size() - 1;
+                msgAdapter.notifyItemInserted(newMsgPosition);
+                recyclerView.scrollToPosition(newMsgPosition);
+            } else {
+                // Add a new sent message to the list.
+                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, speech);
+                msgDtoList.add(msgDto1);
+                int newMsgPosition = msgDtoList.size() - 1;
+                // Notify recycler view insert one new data.
+                msgAdapter.notifyItemInserted(newMsgPosition);
+                // Scroll RecyclerView to the last message.
+                recyclerView.scrollToPosition(newMsgPosition);
+            }
         }
     }
 }
