@@ -3,9 +3,13 @@ package com.pabitrarista.chatdialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -33,6 +37,7 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgViewHolder> {
             // Otherwise each iteview's distance is too big.
             holder.rightMsgTextView.setVisibility(GONE);
             holder.leftImageView.setVisibility(GONE);
+            holder.relativeLayout.setVisibility(GONE);
         }
         // If the message is a sent message.
         else if (msgDto.MSG_TYPE_SENT.equals(msgDto.getMsgType())) {
@@ -43,6 +48,7 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgViewHolder> {
             // Otherwise each iteview's distance is too big.
             holder.leftMsgTextView.setVisibility(GONE);
             holder.leftImageView.setVisibility(GONE);
+            holder.relativeLayout.setVisibility(GONE);
         }
         // If the message is an image message.
         else if (msgDto.MSG_TYPE_IMAGE.equals(msgDto.getMsgType())) {
@@ -52,6 +58,46 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgViewHolder> {
             holder.rightMsgTextView.setVisibility(GONE);
             holder.leftMsgTextView.setVisibility(GONE);
             holder.leftImageView.setVisibility(VISIBLE);
+            holder.relativeLayout.setVisibility(GONE);
+        }
+        // If the message is a video message.
+        else if (msgDto.MSG_TYPE_VIDEO.equals(msgDto.getMsgType())) {
+            final String videoId = msgDto.getMsgContent();
+            final int startSeconds = msgDto.getStartSeconds();
+            final ImageView leftPlay = holder.leftPlay;
+            final ImageView leftPause = holder.leftPause;
+            holder.youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(@NonNull final YouTubePlayer youTubePlayer) {
+
+                    youTubePlayer.cueVideo(videoId, startSeconds);
+//                    youTubePlayer.loadVideo(videoId, 88);
+//                    youTubePlayer.play();
+//                    youTubePlayer.pause();
+
+                    leftPlay.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            youTubePlayer.play();
+                            leftPlay.setVisibility(View.GONE);
+                            leftPause.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    leftPause.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            youTubePlayer.pause();
+                            leftPause.setVisibility(View.GONE);
+                            leftPlay.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            });
+
+            holder.rightMsgTextView.setVisibility(GONE);
+            holder.leftMsgTextView.setVisibility(GONE);
+            holder.leftImageView.setVisibility(GONE);
+            holder.relativeLayout.setVisibility(VISIBLE);
         }
     }
 

@@ -7,6 +7,11 @@ public class MsgSendReceive {
 
     public final static String MSG_TYPE_IMAGE = "MSG_TYPE_IMAGE";
 
+    public final static String MSG_TYPE_VIDEO = "MSG_TYPE_VIDEO";
+
+    // Video start time
+    private int startSeconds;
+
     // Message content.
     private String msgContent;
 
@@ -32,5 +37,13 @@ public class MsgSendReceive {
 
     public void setMsgType(String msgType) {
         this.msgType = msgType;
+    }
+
+    public void setStartSeconds(int startSeconds) {
+        this.startSeconds = startSeconds;
+    }
+
+    public int getStartSeconds() {
+        return startSeconds;
     }
 }

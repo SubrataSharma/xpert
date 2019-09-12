@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <!--    android:layout_marginBottom="30dp"-->
@@ -33,4 +34,34 @@
         android:layout_alignParentStart="true"
         android:src="@drawable/opinion"
         android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/view_chat_item_relative_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+            android:id="@+id/youtube_player_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            app:showFullScreenButton="false" />
+
+        <ImageView
+            android:id="@+id/view_chat_item_play"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_play_circle_outline"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/view_chat_item_pause"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_pause_circle_outline"
+            android:visibility="gone" />
+    </RelativeLayout>
 </RelativeLayout>

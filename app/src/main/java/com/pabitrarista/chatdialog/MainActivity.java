@@ -223,6 +223,13 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
                 int newMsgPosition = msgDtoList.size() - 1;
                 msgAdapter.notifyItemInserted(newMsgPosition);
                 recyclerView.scrollToPosition(newMsgPosition);
+            } else if (result.getResolvedQuery().equals("Video")) {
+                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_VIDEO, "TqUbiOgEb0w");
+                msgDto1.setStartSeconds(88);
+                msgDtoList.add(msgDto1);
+                int newMsgPosition = msgDtoList.size() - 1;
+                msgAdapter.notifyItemInserted(newMsgPosition);
+                recyclerView.scrollToPosition(newMsgPosition);
             } else {
                 // Add a new sent message to the list.
                 MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, speech);
