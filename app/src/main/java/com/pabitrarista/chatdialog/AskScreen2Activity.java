@@ -5,8 +5,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -41,6 +43,10 @@ public class AskScreen2Activity extends AppCompatActivity implements View.OnClic
     private static final String ANSWER_STATUS_KEY = "answer_status";
     private static final String PHRASE_KEY = "phrase"; //for answer_status = default
     private static final String QUESTION_KEY = "question"; //for answer_status = custom
+    private static final String ANS_FORMAT_KEY = "ans_format";
+    private static final String ANS_TEXT_KEY = "ans_text";
+    private static final String ANS_VIDEO_ID_KEY = "ans_video_id";
+    private static final String ANS_START_KEY = "ans_start";
 
     TextView textView1, textView2, textView3, textView4, textView5, textView6, textView7, textView8, textView9;
     LinearLayout linearLayout;
@@ -49,10 +55,15 @@ public class AskScreen2Activity extends AppCompatActivity implements View.OnClic
     ArrayAdapter arrayAdapter;
     ListView listView;
 
+    String option = null;
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ask_screen2);
+
+        option = getIntent().getStringExtra("option");
 
         this.getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -64,40 +75,20 @@ public class AskScreen2Activity extends AppCompatActivity implements View.OnClic
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent in2 = new Intent(AskScreen2Activity.this, MainActivity.class);
-                startActivity(in2);
-                finish();
+                onBackPressed();
             }
         });
 
         init();
         linearLayout.setVisibility(View.GONE);
 
-        Query bucket2Personality = db.collection(XPERT_MASTER_KEY)
+        Query bucket2 = db.collection(XPERT_MASTER_KEY)
                 .document(A_R_RAHMAN_KEY)
                 .collection(RESPONSE_KEY)
                 .whereEqualTo(BUCKET_1_KEY, "exp")
-                .whereEqualTo(BUCKET_2_KEY, "personality");
+                .whereEqualTo(BUCKET_2_KEY, option);
 
-        Query bucket2Opinion = db.collection(XPERT_MASTER_KEY)
-                .document(SACHIN_BANSAL)
-                .collection(RESPONSE_KEY)
-                .whereEqualTo(BUCKET_1_KEY, "exp")
-                .whereEqualTo(BUCKET_2_KEY, "opinion");
-
-        Query bucket2Journey = db.collection(XPERT_MASTER_KEY)
-                .document(SACHIN_BANSAL)
-                .collection(RESPONSE_KEY)
-                .whereEqualTo(BUCKET_1_KEY, "exp")
-                .whereEqualTo(BUCKET_2_KEY, "journey");
-
-        Query bucket2Pro = db.collection(XPERT_MASTER_KEY)
-                .document(SACHIN_BANSAL)
-                .collection(RESPONSE_KEY)
-                .whereEqualTo(BUCKET_1_KEY, "exp")
-                .whereEqualTo(BUCKET_2_KEY, "pro");
-
-        bucket2Personality.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        bucket2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -163,6 +154,8 @@ public class AskScreen2Activity extends AppCompatActivity implements View.OnClic
         textView7.setOnClickListener(this);
         textView8.setOnClickListener(this);
         textView9.setOnClickListener(this);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 
     private void setTxt(int i, String str) {
@@ -234,11 +227,11 @@ public class AskScreen2Activity extends AppCompatActivity implements View.OnClic
         if (bucket3 != null) {
             arrayList = new ArrayList<>();
 
-            Query bucket3Q = db.collection(XPERT_MASTER_KEY)
+            final Query bucket3Q = db.collection(XPERT_MASTER_KEY)
                     .document(A_R_RAHMAN_KEY)
                     .collection(RESPONSE_KEY)
                     .whereEqualTo(BUCKET_1_KEY, "exp")
-                    .whereEqualTo(BUCKET_2_KEY, "personality")
+                    .whereEqualTo(BUCKET_2_KEY, option)
                     .whereEqualTo(BUCKET_3_KEY, bucket3)
                     .whereEqualTo(ANSWER_STATUS_KEY, "custom");
 
@@ -269,7 +262,33 @@ public class AskScreen2Activity extends AppCompatActivity implements View.OnClic
                                 tv.setTextColor(Color.RED);
                                 // tv.getText();
                                 // arrayList.get(i);
-                                Toast.makeText(getApplicationContext(), i + "", Toast.LENGTH_SHORT).show();
+                                Query question = bucket3Q.whereEqualTo(QUESTION_KEY, tv.getText().toString());
+                                question.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            String ans_format = null, ans = null;
+                                            int ans_start = -1;
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                ans_format = document.getString(ANS_FORMAT_KEY);
+                                                if (ans_format.equals("text")) {
+                                                    ans = document.getString(ANS_TEXT_KEY);
+                                                } else if (ans_format.equals("video")) {
+                                                    ans = document.getString(ANS_VIDEO_ID_KEY);
+                                                    ans_start = document.getLong(ANS_START_KEY).intValue();
+                                                }
+                                                SharedPreferences.Editor editor = preferences.edit();
+                                                editor.putString("ans_format", ans_format);
+                                                editor.putString("ans", ans);
+                                                editor.putInt("ans_start", ans_start);
+                                                editor.apply();
+                                                onBackPressed();
+//                                                Toast.makeText(AskScreen2Activity.this, ans, Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                });
+//                                Toast.makeText(getApplicationContext(), i + "", Toast.LENGTH_SHORT).show();
                             }
                         });
                     } else {

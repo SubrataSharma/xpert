@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     AIService aiService;
     AIDataService aiDataService;
+
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +101,26 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     public void funFacts(View view) {
         Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
+        in.putExtra("option", "personality");
         startActivity(in);
-        finish();
+    }
+
+    public void opinions(View view) {
+        Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
+        in.putExtra("option", "opinion");
+        startActivity(in);
+    }
+
+    public void life(View view) {
+        Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
+        in.putExtra("option", "journey");
+        startActivity(in);
+    }
+
+    public void cricket(View view) {
+        Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
+        in.putExtra("option", "pro");
+        startActivity(in);
     }
 
     public void sendMsg(View view) {
@@ -152,6 +174,44 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     @Override
     public void onListeningFinished() {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String ans = preferences.getString("ans", null);
+        String ans_format = preferences.getString("ans_format", null);
+        int ans_start = preferences.getInt("ans_start", -1);
+
+        if (ans_format != null && ans != null) {
+//            Toast.makeText(this, ans_format, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, ans, Toast.LENGTH_SHORT).show();
+//            if (ans_start != -1) {
+//                Toast.makeText(this, ans_start + "", Toast.LENGTH_SHORT).show();
+//            }
+
+            if (ans_format.equals("video")) {
+                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_VIDEO, ans);
+                msgDto1.setStartSeconds(ans_start);
+                msgDtoList.add(msgDto1);
+                int newMsgPosition = msgDtoList.size() - 1;
+                msgAdapter.notifyItemInserted(newMsgPosition);
+                recyclerView.scrollToPosition(newMsgPosition);
+            } else if (ans_format.equals("text")) {
+                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, ans);
+                msgDtoList.add(msgDto1);
+                int newMsgPosition = msgDtoList.size() - 1;
+                msgAdapter.notifyItemInserted(newMsgPosition);
+                recyclerView.scrollToPosition(newMsgPosition);
+            }
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("ans_format", null);
+            editor.putString("ans", null);
+            editor.putInt("ans_start", -1);
+            editor.apply();
+        }
     }
 }
 
@@ -223,14 +283,14 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
                 int newMsgPosition = msgDtoList.size() - 1;
                 msgAdapter.notifyItemInserted(newMsgPosition);
                 recyclerView.scrollToPosition(newMsgPosition);
-            } else if (result.getResolvedQuery().equals("Video")) {
+            } /*else if (result.getResolvedQuery().equals("Video")) {
                 MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_VIDEO, "TqUbiOgEb0w");
                 msgDto1.setStartSeconds(88);
                 msgDtoList.add(msgDto1);
                 int newMsgPosition = msgDtoList.size() - 1;
                 msgAdapter.notifyItemInserted(newMsgPosition);
                 recyclerView.scrollToPosition(newMsgPosition);
-            } else {
+            }*/ else {
                 // Add a new sent message to the list.
                 MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, speech);
                 msgDtoList.add(msgDto1);
