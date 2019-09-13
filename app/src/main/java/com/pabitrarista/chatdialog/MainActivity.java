@@ -18,6 +18,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mannan.translateapi.Language;
+import com.mannan.translateapi.TranslateAPI;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,8 +127,26 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     public void sendMsg(View view) {
-        String msg = editText.getText().toString().trim();
+        final String msg = editText.getText().toString().trim();
         if (!msg.equals("")) {
+
+            TranslateAPI translateAPI = new TranslateAPI(
+                    Language.AUTO_DETECT,   //Source Language
+                    Language.ENGLISH,         //Target Language
+                    msg);           //Query Text
+
+            translateAPI.setTranslateListener(new TranslateAPI.TranslateListener() {
+                @Override
+                public void onSuccess(String translatedText) {
+                    callDialogFlow(translatedText);
+                }
+
+                @Override
+                public void onFailure(String ErrorText) {
+                    callDialogFlow(msg);
+                }
+            });
+
             // Add a new sent message to the list.
             MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_SENT, msg);
             msgDtoList.add(msgDto1);
@@ -136,12 +157,15 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             recyclerView.scrollToPosition(newMsgPosition);
 
             textView.append("\n\n" + msg);
-            new AiTask(this, aiDataService, textView, scrollView, msgAdapter, msgDtoList, recyclerView).execute(msg, "", "");
             editText.setText("");
             scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+        }
+    }
+
+    public void callDialogFlow(String msg) {
+        new AiTask(this, aiDataService, textView, scrollView, msgAdapter, msgDtoList, recyclerView).execute(msg, "", "");
 //            aiService.startListening();
 //            textView.append(msg + "\n\n");
-        }
     }
 
     @Override
