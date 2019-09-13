@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        MsgSendReceive msgDto = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, "");
+        MsgSendReceive msgDto = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, "Hello...!");
         msgDtoList.add(msgDto);
         // Create the data adapter with above data list.
         msgAdapter = new MsgAdapter(msgDtoList);
