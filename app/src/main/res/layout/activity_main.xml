@@ -46,13 +46,13 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/cricket"
+                        android:background="@drawable/image_cricket"
                         android:onClick="funFacts" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/fun_facts"
+                        android:background="@drawable/image_fun_facts"
                         android:gravity="center">
 
                         <TextView
@@ -75,7 +75,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/opinion"
+                        android:background="@drawable/image_opinion"
                         android:onClick="opinions" />
 
                     <RelativeLayout
@@ -103,7 +103,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/life"
+                        android:background="@drawable/image_life"
                         android:onClick="life" />
 
                     <RelativeLayout
@@ -133,7 +133,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/cricket"
+                        android:background="@drawable/image_cricket"
                         android:onClick="cricket" />
 
                     <RelativeLayout

@@ -34,6 +34,8 @@ public class QuestionViewAdapter extends RecyclerView.Adapter<QuestionViewHolder
     @Override
     public void onBindViewHolder(@NonNull final QuestionViewHolder holder, final int position) {
         holder.textView.setText(arrayList.get(position));
+        if (position % 2 != 0)
+            holder.textView.setBackgroundResource(R.drawable.image_speech_bubble_reverse_2);
 
         holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
