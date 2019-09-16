@@ -3,6 +3,7 @@ package com.pabitrarista.chatdialog.recyclerview;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,12 +32,24 @@ public class QuestionViewAdapter extends RecyclerView.Adapter<QuestionViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull QuestionViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final QuestionViewHolder holder, final int position) {
         holder.textView.setText(arrayList.get(position));
+
+        holder.textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setAnswer(holder, position);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return arrayList.size();
+    }
+
+    public void setAnswer(QuestionViewHolder holder, int position) {
+//        Toast.makeText(askScreen2Activity, holder.textView.getText().toString(), Toast.LENGTH_SHORT).show();
+        askScreen2Activity.setAnswer(holder.textView.getText().toString());
     }
 }

@@ -204,26 +204,26 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     protected void onResume() {
         super.onResume();
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String ans = preferences.getString("ans", null);
-        String ans_format = preferences.getString("ans_format", null);
-        int ans_start = preferences.getInt("ans_start", -1);
+        String response = preferences.getString("response", null);
+        String response_type = preferences.getString("response_type", null);
+        int video_start = preferences.getInt("video_start", -1);
 
-        if (ans_format != null && ans != null) {
-//            Toast.makeText(this, ans_format, Toast.LENGTH_SHORT).show();
-//            Toast.makeText(this, ans, Toast.LENGTH_SHORT).show();
-//            if (ans_start != -1) {
-//                Toast.makeText(this, ans_start + "", Toast.LENGTH_SHORT).show();
+        if (response_type != null && response != null) {
+//            Toast.makeText(this, response_type, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+//            if (video_start != -1) {
+//                Toast.makeText(this, video_start + "", Toast.LENGTH_SHORT).show();
 //            }
 
-            if (ans_format.equals("video")) {
-                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_VIDEO, ans);
-                msgDto1.setStartSeconds(ans_start);
+            if (response_type.equals("video")) {
+                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_VIDEO, response);
+                msgDto1.setStartSeconds(video_start);
                 msgDtoList.add(msgDto1);
                 int newMsgPosition = msgDtoList.size() - 1;
                 msgAdapter.notifyItemInserted(newMsgPosition);
                 recyclerView.scrollToPosition(newMsgPosition);
-            } else if (ans_format.equals("text")) {
-                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, ans);
+            } else if (response_type.equals("text")) {
+                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, response);
                 msgDtoList.add(msgDto1);
                 int newMsgPosition = msgDtoList.size() - 1;
                 msgAdapter.notifyItemInserted(newMsgPosition);
@@ -231,9 +231,9 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             }
 
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("ans_format", null);
-            editor.putString("ans", null);
-            editor.putInt("ans_start", -1);
+            editor.putString("response_type", null);
+            editor.putString("response", null);
+            editor.putInt("video_start", -1);
             editor.apply();
         }
     }

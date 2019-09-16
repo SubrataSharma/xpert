@@ -7,16 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -40,18 +34,17 @@ public class AskScreen2Activity extends AppCompatActivity {
     private static final String XPERT_MASTER_KEY = "xpert_master";
     private static final String A_R_RAHMAN_KEY = "a-r-rahman";
     private static final String SACHIN_BANSAL = "sachin-bansal";
-    private static final String RESPONSE_KEY = "responses";
+    private static final String RESPONSES_KEY = "responses";
     private static final String BUCKET_1_KEY = "bucket1";
     private static final String BUCKET_2_KEY = "bucket2";
     private static final String BUCKET_3_KEY = "bucket3";
     private static final String ANSWER_STATUS_KEY = "answer_status";
     private static final String PHRASE_KEY = "phrase"; //for answer_status = default
     private static final String QUESTION_KEY = "question"; //for answer_status = custom
-    private static final String ANS_FORMAT_KEY = "ans_format";
-    private static final String ANS_TEXT_KEY = "ans_text";
-    private static final String ANS_VIDEO_ID_KEY = "ans_video_id";
+    private static final String RESPONSE_TYPE_KEY = "response_type"; //text || url || video
+    private static final String RESPONSE_KEY = "response";
     private static final String ANS_START_KEY = "ans_start";
-    Query bucket2, bucket3;
+    Query bucket2, bucket3, question;
 
     RecyclerView bucketRecyclerView;
     ArrayList<String> bucketArrayList;
@@ -104,7 +97,7 @@ public class AskScreen2Activity extends AppCompatActivity {
     private void setBucket() {
         bucket2 = db.collection(XPERT_MASTER_KEY)
                 .document(A_R_RAHMAN_KEY)
-                .collection(RESPONSE_KEY)
+                .collection(RESPONSES_KEY)
                 .whereEqualTo(BUCKET_1_KEY, "exp")
                 .whereEqualTo(BUCKET_2_KEY, option)
                 .whereEqualTo(ANSWER_STATUS_KEY, "custom");
@@ -147,6 +140,40 @@ public class AskScreen2Activity extends AppCompatActivity {
 
                     questionViewAdapter = new QuestionViewAdapter(AskScreen2Activity.this, questionArrayList);
                     questionRecyclerView.setAdapter(questionViewAdapter);
+                }
+            }
+        });
+    }
+
+    public void setAnswer(String questionContent) {
+        question = bucket3
+                .whereEqualTo(QUESTION_KEY, questionContent);
+
+        question.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    String response_type = null, response = null;
+                    int video_start = -1;
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        response_type = document.getString(RESPONSE_TYPE_KEY);
+                        if (response_type.equals("text")) {
+                            response = document.getString(RESPONSE_KEY);
+                        } else if (response_type.equals("url")) {
+                            response = document.getString(RESPONSE_KEY);
+                        } else if (response_type.equals("video")) {
+                            response = document.getString(RESPONSE_KEY);
+                            video_start = document.getLong(ANS_START_KEY).intValue();
+                        }
+                    }
+
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("response_type", response_type);
+                    editor.putString("response", response);
+                    editor.putInt("video_start", video_start);
+                    editor.apply();
+                    onBackPressed();
                 }
             }
         });
