@@ -14,7 +14,6 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,8 +41,6 @@ import ai.api.model.Result;
 public class MainActivity extends AppCompatActivity implements AIListener {
 
     EditText editText;
-    TextView textView;
-    ScrollView scrollView;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     // Create the initial data list.
@@ -79,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     private void init() {
         editText = findViewById(R.id.main_editText);
-        textView = findViewById(R.id.main_textView);
-        scrollView = findViewById(R.id.main_scroll_view);
 
         recyclerView = findViewById(R.id.main_recycler_view);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -156,14 +151,12 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             // Scroll RecyclerView to the last message.
             recyclerView.scrollToPosition(newMsgPosition);
 
-            textView.append("\n\n" + msg);
             editText.setText("");
-            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
         }
     }
 
     public void callDialogFlow(String msg) {
-        new AiTask(this, aiDataService, textView, scrollView, msgAdapter, msgDtoList, recyclerView).execute(msg, "", "");
+        new AiTask(this, aiDataService, msgAdapter, msgDtoList, recyclerView).execute(msg, "", "");
 //            aiService.startListening();
 //            textView.append(msg + "\n\n");
     }
@@ -172,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     public void onResult(AIResponse result) {
         Result result1 = result.getResult();
 //        textView.setText("Query: " + result1.getResolvedQuery() + "\nAction: " + result1.getAction());
-        textView.append(result1.getResolvedQuery() + "\n" + result1.getFulfillment().getSpeech() + "\n\n");
+//        textView.append(result1.getResolvedQuery() + "\n" + result1.getFulfillment().getSpeech() + "\n\n");
     }
 
     @Override
@@ -243,17 +236,13 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
 
     private final WeakReference<Context> context;
     private final AIDataService aiService;
-    TextView textView;
-    ScrollView scrollView;
     MsgAdapter msgAdapter;
     RecyclerView recyclerView;
     List<MsgSendReceive> msgDtoList;
 
-    public AiTask(Context context, AIDataService aiService, TextView textView, ScrollView scrollView, MsgAdapter msgAdapter, List<MsgSendReceive> msgDtoList, RecyclerView recyclerView) {
+    public AiTask(Context context, AIDataService aiService,   MsgAdapter msgAdapter, List<MsgSendReceive> msgDtoList, RecyclerView recyclerView) {
         this.context = new WeakReference<>(context);
         this.aiService = aiService;
-        this.textView = textView;
-        this.scrollView = scrollView;
         this.msgAdapter = msgAdapter;
         this.recyclerView = recyclerView;
         this.msgDtoList = msgDtoList;
@@ -298,8 +287,6 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
             final String speech = result.getFulfillment().getSpeech();
             //Toast.makeText(context.get(), speech, Toast.LENGTH_LONG).show();
             //result.getResolvedQuery()
-            textView.append("\n" + speech);
-            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
 
             if (result.getResolvedQuery().equals("Image")) {
                 MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_IMAGE, "http://rma-upload.s3.amazonaws.com/2019_08_22_11_11_59banner.png");

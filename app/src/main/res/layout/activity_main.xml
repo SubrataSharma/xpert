@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -13,32 +12,10 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/main_linear_layout" />
 
-    <ScrollView
-        android:id="@+id/main_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/main_linear_layout"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/main_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="60dp"
-                android:text=""
-                android:textAllCaps="false"
-                android:textColor="#000000" />
-        </LinearLayout>
-    </ScrollView>
-
 
     <LinearLayout
         android:id="@+id/main_linear_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
@@ -46,6 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
             android:text="ASK ABOUT VIRAT'S" />
 
         <HorizontalScrollView
@@ -61,6 +39,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="150dp"
                     android:layout_height="80dp"
+                    android:layout_marginStart="1dp"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
 
@@ -89,7 +68,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="150dp"
                     android:layout_height="80dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
 
@@ -117,7 +96,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="150dp"
                     android:layout_height="80dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
 
@@ -146,7 +125,8 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="150dp"
                     android:layout_height="80dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="1dp"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
 
@@ -176,7 +156,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_margin="5dp"
             android:gravity="center"
             android:orientation="horizontal">
 
