@@ -8,8 +8,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ask_screen2_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
 
     <View
         android:id="@+id/ask_screen2_view"
@@ -18,8 +19,8 @@
         android:layout_below="@+id/ask_screen2_recycler_view"
         android:background="#000" />
 
-    <ListView
-        android:id="@+id/listView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ask_screen2_recycler_view_2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/ask_screen2_view" />

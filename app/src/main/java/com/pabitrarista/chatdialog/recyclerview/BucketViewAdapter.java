@@ -49,6 +49,7 @@ public class BucketViewAdapter extends RecyclerView.Adapter<BucketViewHolder> {
     }
 
     public void setQuestion(BucketViewHolder holder, int position) {
-        Toast.makeText(askScreen2Activity, holder.textView.getText().toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(askScreen2Activity, holder.textView.getText().toString(), Toast.LENGTH_SHORT).show();
+        askScreen2Activity.setQuestion(holder.textView.getText().toString());
     }
 }
