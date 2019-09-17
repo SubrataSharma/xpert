@@ -1,7 +1,5 @@
 package com.pabitrarista.chatdialog.recyclerview;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +17,11 @@ public class QuestionViewAdapter extends RecyclerView.Adapter<QuestionViewHolder
 
     private AskScreen2Activity askScreen2Activity;
     private ArrayList<String> arrayList;
-
-    private SharedPreferences preferences;
-    int imageDirection;
+    private int backgroundImage = 0;
 
     public QuestionViewAdapter(AskScreen2Activity askScreen2Activity, ArrayList<String> arrayList) {
         this.askScreen2Activity = askScreen2Activity;
         this.arrayList = arrayList;
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(askScreen2Activity);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("imageDirection", 0);
-        editor.apply();
     }
 
     @NonNull
@@ -45,17 +36,12 @@ public class QuestionViewAdapter extends RecyclerView.Adapter<QuestionViewHolder
     public void onBindViewHolder(@NonNull final QuestionViewHolder holder, final int position) {
         holder.textView.setText(arrayList.get(position));
 
-        imageDirection = preferences.getInt("imageDirection", 0);
-        if (imageDirection == 0) {
+        if (backgroundImage == 0) {
             holder.textView.setBackgroundResource(R.drawable.image_speech_bubble_2);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt("imageDirection", 1);
-            editor.apply();
-        } else if (imageDirection == 1) {
+            backgroundImage = 1;
+        } else if (backgroundImage == 1) {
             holder.textView.setBackgroundResource(R.drawable.image_speech_bubble_reverse_2);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt("imageDirection", 0);
-            editor.apply();
+            backgroundImage = 0;
         }
 
         holder.textView.setOnClickListener(new View.OnClickListener() {
