@@ -145,7 +145,7 @@ public class AskScreen2Activity extends AppCompatActivity {
         });
     }
 
-    public void setAnswer(String questionContent) {
+    public void setAnswer(final String questionContent) {
         question = bucket3
                 .whereEqualTo(QUESTION_KEY, questionContent);
 
@@ -169,6 +169,7 @@ public class AskScreen2Activity extends AppCompatActivity {
                     }
 
                     SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("question_content", questionContent);
                     editor.putString("response_type", response_type);
                     editor.putString("response", response);
                     editor.putInt("video_start", video_start);

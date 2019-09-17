@@ -189,27 +189,36 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     protected void onResume() {
         super.onResume();
 
+        String question_content = preferences.getString("question_content", null);
         String response = preferences.getString("response", null);
         String response_type = preferences.getString("response_type", null);
         int video_start = preferences.getInt("video_start", -1);
 
         if (response_type != null && response != null && !response.equals("")) {
+
+            ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_SENT, question_content);
+            chatViewData.add(msg);
+            int newMsgPosition = chatViewData.size() - 1;
+            chatViewAdapter.notifyItemInserted(newMsgPosition);
+            recyclerView.scrollToPosition(newMsgPosition);
+
             if (response_type.equals("video")) {
-                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
+                msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
                 msg.setStartSeconds(video_start);
                 chatViewData.add(msg);
-                int newMsgPosition = chatViewData.size() - 1;
+                newMsgPosition = chatViewData.size() - 1;
                 chatViewAdapter.notifyItemInserted(newMsgPosition);
                 recyclerView.scrollToPosition(newMsgPosition);
             } else if (response_type.equals("text")) {
-                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, response);
+                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, response);
                 chatViewData.add(msg);
-                int newMsgPosition = chatViewData.size() - 1;
+                newMsgPosition = chatViewData.size() - 1;
                 chatViewAdapter.notifyItemInserted(newMsgPosition);
                 recyclerView.scrollToPosition(newMsgPosition);
             }
 
             SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("question_content", null);
             editor.putString("response_type", null);
             editor.putString("response", null);
             editor.putInt("video_start", -1);
