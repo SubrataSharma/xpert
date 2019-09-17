@@ -11,8 +11,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +44,11 @@ import ai.api.model.Result;
 
 public class MainActivity extends AppCompatActivity implements AIListener {
 
+    String TAG = "logtag";
+
+    RelativeLayout relativeLayout;
+    TextView textView;
+    HorizontalScrollView horizontalScrollView;
     EditText editText;
 
     RecyclerView recyclerView;
@@ -71,9 +80,29 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         });
 
         init();
+
+        relativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = relativeLayout.getRootView().getHeight() - relativeLayout.getHeight();
+                //Log.i(TAG, "onGlobalLayout: " + relativeLayout.getRootView().getHeight() + " " + relativeLayout.getHeight() + " " + heightDiff);
+                if (heightDiff > 400) {
+                    textView.setVisibility(View.GONE);
+                    horizontalScrollView.setVisibility(View.GONE);
+                    //Log.i(TAG, "keyboard opened");
+                } else {
+                    textView.setVisibility(View.VISIBLE);
+                    horizontalScrollView.setVisibility(View.VISIBLE);
+                    //Log.i(TAG, "keyboard closed");
+                }
+            }
+        });
     }
 
     private void init() {
+        relativeLayout = findViewById(R.id.main_relative_layout);
+        textView = findViewById(R.id.main_text_view);
+        horizontalScrollView = findViewById(R.id.main_horizontal_scroll_view);
         editText = findViewById(R.id.main_editText);
 
         recyclerView = findViewById(R.id.main_recycler_view);
