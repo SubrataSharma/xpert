@@ -1,4 +1,4 @@
-package com.pabitrarista.chatdialog;
+package com.pabitrarista.chatdialog.recyclerview;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,62 +8,66 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.pabitrarista.chatdialog.R;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class MsgAdapter extends RecyclerView.Adapter<MsgViewHolder> {
-    private List<MsgSendReceive> msgDtoList = null;
+public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
-    public MsgAdapter(List<MsgSendReceive> msgDtoList) {
-        this.msgDtoList = msgDtoList;
+    private List<ChatViewData> chatViewData;
+
+    public ChatViewAdapter(List<ChatViewData> chatViewData) {
+        this.chatViewData = chatViewData;
+    }
+
+    @NonNull
+    @Override
+    public ChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.layout_chat_view, parent, false);
+        return (new ChatViewHolder(view));
     }
 
     @Override
-    public void onBindViewHolder(MsgViewHolder holder, int position) {
-        MsgSendReceive msgDto = this.msgDtoList.get(position);
+    public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
+
+        ChatViewData chatViewData1 = chatViewData.get(position);
+
         // If the message is a received message.
-        if (msgDto.MSG_TYPE_RECEIVED.equals(msgDto.getMsgType())) {
-            // Show received message in left linearlayout.
+        if (chatViewData1.MSG_TYPE_RECEIVED.equals(chatViewData1.getMsgType())) {
+            holder.leftMsgTextView.setText(chatViewData1.getMsgContent());
             holder.leftMsgTextView.setVisibility(VISIBLE);
-            holder.leftMsgTextView.setText(msgDto.getMsgContent());
-            // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
-            // Otherwise each iteview's distance is too big.
             holder.rightMsgTextView.setVisibility(GONE);
             holder.leftImageView.setVisibility(GONE);
             holder.relativeLayout.setVisibility(GONE);
         }
         // If the message is a sent message.
-        else if (msgDto.MSG_TYPE_SENT.equals(msgDto.getMsgType())) {
-            // Show sent message in right linearlayout.
+        else if (chatViewData1.MSG_TYPE_SENT.equals(chatViewData1.getMsgType())) {
+            holder.rightMsgTextView.setText(chatViewData1.getMsgContent());
             holder.rightMsgTextView.setVisibility(VISIBLE);
-            holder.rightMsgTextView.setText(msgDto.getMsgContent());
-            // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
-            // Otherwise each iteview's distance is too big.
             holder.leftMsgTextView.setVisibility(GONE);
             holder.leftImageView.setVisibility(GONE);
             holder.relativeLayout.setVisibility(GONE);
         }
         // If the message is an image message.
-        else if (msgDto.MSG_TYPE_IMAGE.equals(msgDto.getMsgType())) {
+        else if (chatViewData1.MSG_TYPE_IMAGE.equals(chatViewData1.getMsgType())) {
             //Load Image using Picasso library
-            Picasso.get().load(msgDto.getMsgContent()).into(holder.leftImageView);
-
+            Picasso.get().load(chatViewData1.getMsgContent()).into(holder.leftImageView);
+            holder.leftImageView.setVisibility(VISIBLE);
             holder.rightMsgTextView.setVisibility(GONE);
             holder.leftMsgTextView.setVisibility(GONE);
-            holder.leftImageView.setVisibility(VISIBLE);
             holder.relativeLayout.setVisibility(GONE);
         }
         // If the message is a video message.
-        else if (msgDto.MSG_TYPE_VIDEO.equals(msgDto.getMsgType())) {
-            final String videoId = msgDto.getMsgContent();
-            final int startSeconds = msgDto.getStartSeconds();
+        else if (chatViewData1.MSG_TYPE_VIDEO.equals(chatViewData1.getMsgType())) {
+            final String videoId = chatViewData1.getMsgContent();
+            final int startSeconds = chatViewData1.getStartSeconds();
             final ImageView leftPlay = holder.leftPlay;
             final ImageView leftPause = holder.leftPause;
             holder.youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
@@ -78,42 +82,31 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgViewHolder> {
                     leftPlay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            youTubePlayer.play();
                             leftPlay.setVisibility(View.GONE);
                             leftPause.setVisibility(View.VISIBLE);
+                            youTubePlayer.play();
                         }
                     });
                     leftPause.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            youTubePlayer.pause();
                             leftPause.setVisibility(View.GONE);
                             leftPlay.setVisibility(View.VISIBLE);
+                            youTubePlayer.pause();
                         }
                     });
                 }
             });
 
+            holder.relativeLayout.setVisibility(VISIBLE);
             holder.rightMsgTextView.setVisibility(GONE);
             holder.leftMsgTextView.setVisibility(GONE);
             holder.leftImageView.setVisibility(GONE);
-            holder.relativeLayout.setVisibility(VISIBLE);
         }
-    }
-
-    @Override
-    public MsgViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.view_chat_item, parent, false);
-        return new MsgViewHolder(view);
     }
 
     @Override
     public int getItemCount() {
-        if (msgDtoList == null) {
-            msgDtoList = new ArrayList<MsgSendReceive>();
-        }
-        return msgDtoList.size();
+        return chatViewData.size();
     }
-
 }

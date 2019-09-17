@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -19,8 +18,9 @@ import android.widget.Toast;
 
 import com.mannan.translateapi.Language;
 import com.mannan.translateapi.TranslateAPI;
+import com.pabitrarista.chatdialog.recyclerview.ChatViewAdapter;
+import com.pabitrarista.chatdialog.recyclerview.ChatViewData;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,11 +41,10 @@ import ai.api.model.Result;
 public class MainActivity extends AppCompatActivity implements AIListener {
 
     EditText editText;
+
     RecyclerView recyclerView;
-    LinearLayoutManager linearLayoutManager;
-    // Create the initial data list.
-    final List<MsgSendReceive> msgDtoList = new ArrayList<>();
-    MsgAdapter msgAdapter;
+    final List<ChatViewData> chatViewData = new ArrayList<>();
+    ChatViewAdapter chatViewAdapter;
 
     AIService aiService;
     AIDataService aiDataService;
@@ -78,15 +77,12 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         editText = findViewById(R.id.main_editText);
 
         recyclerView = findViewById(R.id.main_recycler_view);
-        linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        MsgSendReceive msgDto = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, "Hello...!");
-        msgDtoList.add(msgDto);
         // Create the data adapter with above data list.
-        msgAdapter = new MsgAdapter(msgDtoList);
+        chatViewAdapter = new ChatViewAdapter(chatViewData);
         // Set data adapter to RecyclerView.
-        recyclerView.setAdapter(msgAdapter);
+        recyclerView.setAdapter(chatViewAdapter);
 
         final AIConfiguration config = new AIConfiguration("5a28a24679e6411699636dc44558724c",
                 AIConfiguration.SupportedLanguages.English,
@@ -95,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         aiService = AIService.getService(this, config);
         aiService.setListener(this);
         aiDataService = new AIDataService(this, config);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 
     public void funFacts(View view) {
@@ -122,13 +120,13 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     public void sendMsg(View view) {
-        final String msg = editText.getText().toString().trim();
-        if (!msg.equals("")) {
+        final String msgEditText = editText.getText().toString().trim();
+        if (!msgEditText.equals("")) {
 
             TranslateAPI translateAPI = new TranslateAPI(
                     Language.AUTO_DETECT,   //Source Language
                     Language.ENGLISH,         //Target Language
-                    msg);           //Query Text
+                    msgEditText);           //Query Text
 
             translateAPI.setTranslateListener(new TranslateAPI.TranslateListener() {
                 @Override
@@ -138,16 +136,16 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
                 @Override
                 public void onFailure(String ErrorText) {
-                    callDialogFlow(msg);
+                    callDialogFlow(msgEditText);
                 }
             });
 
             // Add a new sent message to the list.
-            MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_SENT, msg);
-            msgDtoList.add(msgDto1);
-            int newMsgPosition = msgDtoList.size() - 1;
+            ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_SENT, msgEditText);
+            chatViewData.add(msg);
+            int newMsgPosition = chatViewData.size() - 1;
             // Notify recycler view insert one new data.
-            msgAdapter.notifyItemInserted(newMsgPosition);
+            chatViewAdapter.notifyItemInserted(newMsgPosition);
             // Scroll RecyclerView to the last message.
             recyclerView.scrollToPosition(newMsgPosition);
 
@@ -156,70 +154,58 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     public void callDialogFlow(String msg) {
-        new AiTask(this, aiDataService, msgAdapter, msgDtoList, recyclerView).execute(msg, "", "");
-//            aiService.startListening();
-//            textView.append(msg + "\n\n");
+        new AiTask(MainActivity.this, aiDataService).execute(msg, "", "");
+//        aiService.startListening();
     }
 
     @Override
     public void onResult(AIResponse result) {
         Result result1 = result.getResult();
-//        textView.setText("Query: " + result1.getResolvedQuery() + "\nAction: " + result1.getAction());
-//        textView.append(result1.getResolvedQuery() + "\n" + result1.getFulfillment().getSpeech() + "\n\n");
+        Toast.makeText(this, "Query: " + result1.getResolvedQuery() + "\nAction: " + result1.getAction(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, result1.getFulfillment().getSpeech(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onError(AIError error) {
-
     }
 
     @Override
     public void onAudioLevel(float level) {
-
     }
 
     @Override
     public void onListeningStarted() {
-
     }
 
     @Override
     public void onListeningCanceled() {
-
     }
 
     @Override
     public void onListeningFinished() {
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         String response = preferences.getString("response", null);
         String response_type = preferences.getString("response_type", null);
         int video_start = preferences.getInt("video_start", -1);
 
-        if (response_type != null && response != null) {
-//            Toast.makeText(this, response_type, Toast.LENGTH_SHORT).show();
-//            Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
-//            if (video_start != -1) {
-//                Toast.makeText(this, video_start + "", Toast.LENGTH_SHORT).show();
-//            }
-
+        if (response_type != null && response != null && !response.equals("")) {
             if (response_type.equals("video")) {
-                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_VIDEO, response);
-                msgDto1.setStartSeconds(video_start);
-                msgDtoList.add(msgDto1);
-                int newMsgPosition = msgDtoList.size() - 1;
-                msgAdapter.notifyItemInserted(newMsgPosition);
+                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
+                msg.setStartSeconds(video_start);
+                chatViewData.add(msg);
+                int newMsgPosition = chatViewData.size() - 1;
+                chatViewAdapter.notifyItemInserted(newMsgPosition);
                 recyclerView.scrollToPosition(newMsgPosition);
             } else if (response_type.equals("text")) {
-                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, response);
-                msgDtoList.add(msgDto1);
-                int newMsgPosition = msgDtoList.size() - 1;
-                msgAdapter.notifyItemInserted(newMsgPosition);
+                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, response);
+                chatViewData.add(msg);
+                int newMsgPosition = chatViewData.size() - 1;
+                chatViewAdapter.notifyItemInserted(newMsgPosition);
                 recyclerView.scrollToPosition(newMsgPosition);
             }
 
@@ -234,18 +220,12 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
 class AiTask extends AsyncTask<String, Void, AIResponse> {
 
-    private final WeakReference<Context> context;
+    MainActivity mainActivity;
     private final AIDataService aiService;
-    MsgAdapter msgAdapter;
-    RecyclerView recyclerView;
-    List<MsgSendReceive> msgDtoList;
 
-    public AiTask(Context context, AIDataService aiService,   MsgAdapter msgAdapter, List<MsgSendReceive> msgDtoList, RecyclerView recyclerView) {
-        this.context = new WeakReference<>(context);
+    AiTask(MainActivity mainActivity, AIDataService aiService) {
+        this.mainActivity = mainActivity;
         this.aiService = aiService;
-        this.msgAdapter = msgAdapter;
-        this.recyclerView = recyclerView;
-        this.msgDtoList = msgDtoList;
     }
 
     @Override
@@ -289,27 +269,24 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
             //result.getResolvedQuery()
 
             if (result.getResolvedQuery().equals("Image")) {
-                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_IMAGE, "http://rma-upload.s3.amazonaws.com/2019_08_22_11_11_59banner.png");
-                msgDtoList.add(msgDto1);
-                int newMsgPosition = msgDtoList.size() - 1;
-                msgAdapter.notifyItemInserted(newMsgPosition);
-                recyclerView.scrollToPosition(newMsgPosition);
+                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_IMAGE, "http://rma-upload.s3.amazonaws.com/2019_08_22_11_11_59banner.png");
+                mainActivity.chatViewData.add(msg);
+                int newMsgPosition = mainActivity.chatViewData.size() - 1;
+                mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+                mainActivity.recyclerView.scrollToPosition(newMsgPosition);
             } /*else if (result.getResolvedQuery().equals("Video")) {
-                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_VIDEO, "TqUbiOgEb0w");
-                msgDto1.setStartSeconds(88);
-                msgDtoList.add(msgDto1);
-                int newMsgPosition = msgDtoList.size() - 1;
-                msgAdapter.notifyItemInserted(newMsgPosition);
-                recyclerView.scrollToPosition(newMsgPosition);
+                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, "TqUbiOgEb0w");
+                msg.setStartSeconds(88);
+                mainActivity.chatViewData.add(msg);
+                int newMsgPosition = mainActivity.chatViewData.size() - 1;
+                mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+                mainActivity.recyclerView.scrollToPosition(newMsgPosition);
             }*/ else {
-                // Add a new sent message to the list.
-                MsgSendReceive msgDto1 = new MsgSendReceive(MsgSendReceive.MSG_TYPE_RECEIVED, speech);
-                msgDtoList.add(msgDto1);
-                int newMsgPosition = msgDtoList.size() - 1;
-                // Notify recycler view insert one new data.
-                msgAdapter.notifyItemInserted(newMsgPosition);
-                // Scroll RecyclerView to the last message.
-                recyclerView.scrollToPosition(newMsgPosition);
+                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, speech);
+                mainActivity.chatViewData.add(msg);
+                int newMsgPosition = mainActivity.chatViewData.size() - 1;
+                mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+                mainActivity.recyclerView.scrollToPosition(newMsgPosition);
             }
         }
     }
