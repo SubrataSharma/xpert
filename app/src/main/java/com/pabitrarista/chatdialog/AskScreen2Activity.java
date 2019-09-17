@@ -118,6 +118,8 @@ public class AskScreen2Activity extends AppCompatActivity {
 
                     bucketViewAdapter = new BucketViewAdapter(AskScreen2Activity.this, bucketArrayList);
                     bucketRecyclerView.setAdapter(bucketViewAdapter);
+                    int bucketRecyclerViewPosition = bucketArrayList.size() - 1;
+                    bucketRecyclerView.scrollToPosition(bucketRecyclerViewPosition);
                 }
             }
         });
