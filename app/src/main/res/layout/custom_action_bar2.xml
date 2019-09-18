@@ -9,6 +9,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
+        android:foreground="?attr/selectableItemBackground"
         android:src="@drawable/icon_arrow" />
 
     <TextView

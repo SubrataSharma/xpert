@@ -120,6 +120,27 @@ public class AskScreen2Activity extends AppCompatActivity {
                     bucketRecyclerView.setAdapter(bucketViewAdapter);
                     int bucketRecyclerViewPosition = bucketArrayList.size() - 1;
                     bucketRecyclerView.scrollToPosition(bucketRecyclerViewPosition);
+
+                    setAllQuestion();
+                }
+            }
+        });
+    }
+
+    private void setAllQuestion() {
+        bucket2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    String str;
+                    questionArrayList.clear();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        str = document.getString(QUESTION_KEY);
+                        questionArrayList.add(str);
+                    }
+
+                    questionViewAdapter = new QuestionViewAdapter(AskScreen2Activity.this, questionArrayList);
+                    questionRecyclerView.setAdapter(questionViewAdapter);
                 }
             }
         });
@@ -148,7 +169,7 @@ public class AskScreen2Activity extends AppCompatActivity {
     }
 
     public void setAnswer(final String questionContent) {
-        question = bucket3
+        question = bucket2
                 .whereEqualTo(QUESTION_KEY, questionContent);
 
         question.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
