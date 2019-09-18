@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +77,13 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(MainActivity.this, "You have clicked tittle", Toast.LENGTH_LONG).show();
+            }
+        });
+        ImageView back = view.findViewById(R.id.custom_action_bar_back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
 

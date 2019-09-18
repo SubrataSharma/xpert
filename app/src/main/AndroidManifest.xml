@@ -15,7 +15,9 @@
 
         <activity android:name=".AskScreen2Activity" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" />
+
+        <activity android:name=".XpertListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

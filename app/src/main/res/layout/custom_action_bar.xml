@@ -12,9 +12,11 @@
         android:layout_weight="0.6">
 
         <ImageView
+            android:id="@+id/custom_action_bar_back"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
+            android:foreground="?attr/selectableItemBackground"
             android:src="@drawable/icon_arrow" />
 
         <ImageView
