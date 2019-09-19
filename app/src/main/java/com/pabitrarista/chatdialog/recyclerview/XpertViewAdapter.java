@@ -16,11 +16,13 @@ import java.util.ArrayList;
 public class XpertViewAdapter extends RecyclerView.Adapter<XpertViewHolder> {
 
     private XpertListActivity xpertListActivity;
-    private ArrayList<XpertViewData> xpertViewDataArrayList;
+    private ArrayList<String> xpertName;
+    private ArrayList<String> xpertImage;
 
-    public XpertViewAdapter(XpertListActivity xpertListActivity, ArrayList<XpertViewData> xpertViewDataArrayList) {
+    public XpertViewAdapter(XpertListActivity xpertListActivity, ArrayList<String> xpertName, ArrayList<String> xpertImage) {
         this.xpertListActivity = xpertListActivity;
-        this.xpertViewDataArrayList = xpertViewDataArrayList;
+        this.xpertName = xpertName;
+        this.xpertImage = xpertImage;
     }
 
     @NonNull
@@ -33,10 +35,13 @@ public class XpertViewAdapter extends RecyclerView.Adapter<XpertViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull XpertViewHolder holder, int position) {
-        XpertViewData xpertViewData = xpertViewDataArrayList.get(position);
 
-        holder.textView.setText(xpertViewData.getXpertProfileName());
-        Picasso.get().load("https://xpert-firebase-images.s3.ap-south-1.amazonaws.com/2018/10/aamir-khan-2-150x150.jpg").into(holder.circleImageView);
+        holder.textView.setText(xpertName.get(position));
+        try {
+            Picasso.get().load(xpertImage.get(position)).into(holder.circleImageView);
+        } catch (Exception e) {
+            Picasso.get().load("https://xpert-firebase-images.s3.ap-south-1.amazonaws.com/2018/10/aamir-khan-2-150x150.jpg").into(holder.circleImageView);
+        }
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +53,6 @@ public class XpertViewAdapter extends RecyclerView.Adapter<XpertViewHolder> {
 
     @Override
     public int getItemCount() {
-        return xpertViewDataArrayList.size();
+        return xpertName.size();
     }
 }
