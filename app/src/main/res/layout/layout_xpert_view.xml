@@ -10,7 +10,7 @@
         android:id="@+id/xpert_view_profile_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/image_cricket" />
+        android:src="@drawable/icon_dp" />
 
     <TextView
         android:id="@+id/xpert_view_profile_name"

@@ -75,8 +75,10 @@ public class XpertListActivity extends AppCompatActivity {
         });
     }
 
-    public void showXpertChat() {
+    public void showXpertChat(String xpertName, String xpertImage) {
         Intent in = new Intent(XpertListActivity.this, MainActivity.class);
+        in.putExtra("xpertName", xpertName);
+        in.putExtra("xpertImage", xpertImage);
         startActivity(in);
     }
 }

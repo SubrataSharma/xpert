@@ -25,6 +25,7 @@ import com.mannan.translateapi.Language;
 import com.mannan.translateapi.TranslateAPI;
 import com.pabitrarista.chatdialog.recyclerview.ChatViewAdapter;
 import com.pabitrarista.chatdialog.recyclerview.ChatViewData;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +43,7 @@ import ai.api.model.AIEvent;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.model.Result;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements AIListener {
 
@@ -61,10 +63,15 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     private SharedPreferences preferences;
 
+    String xpertName, xpertImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        xpertName = getIntent().getStringExtra("xpertName");
+        xpertImage = getIntent().getStringExtra("xpertImage");
 
         this.getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -72,13 +79,14 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         getSupportActionBar().setElevation(0);
         View view = getSupportActionBar().getCustomView();
 
-        TextView name = view.findViewById(R.id.name);
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Toast.makeText(MainActivity.this, "You have clicked tittle", Toast.LENGTH_LONG).show();
-            }
-        });
+        TextView name = view.findViewById(R.id.custom_action_bar_name);
+        name.setText(xpertName);
+        CircleImageView image = view.findViewById(R.id.custom_action_bar_image);
+        try {
+            Picasso.get().load(xpertImage).into(image);
+        } catch (Exception e) {
+            Picasso.get().load(R.drawable.icon_dp).into(image);
+        }
         ImageView back = view.findViewById(R.id.custom_action_bar_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override

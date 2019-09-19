@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
@@ -7,9 +9,8 @@
     android:weightSum="1">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.6">
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/custom_action_bar_back"
@@ -19,24 +20,28 @@
             android:foreground="?attr/selectableItemBackground"
             android:src="@drawable/icon_arrow" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/custom_action_bar_image"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
-            android:src="@drawable/icon_dp" />
+            android:src="@drawable/icon_dp"
+            app:civ_border_color="#FFFFFF"
+            app:civ_border_width="1dp" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/custom_action_bar_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="5dp"
             android:fontFamily="@font/roboto_light"
-            android:text="Virat"
+            android:maxWidth="130dp"
             android:textColor="#ffffff"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            tools:text="Xpert Name" />
 
         <ImageView
             android:layout_width="30dp"
@@ -46,10 +51,9 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
-        android:layout_weight="0.4"
         android:gravity="end">
 
         <ImageView

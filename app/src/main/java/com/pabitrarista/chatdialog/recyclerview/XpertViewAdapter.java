@@ -34,19 +34,19 @@ public class XpertViewAdapter extends RecyclerView.Adapter<XpertViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull XpertViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final XpertViewHolder holder, final int position) {
 
         holder.textView.setText(xpertName.get(position));
         try {
             Picasso.get().load(xpertImage.get(position)).into(holder.circleImageView);
         } catch (Exception e) {
-            Picasso.get().load("https://xpert-firebase-images.s3.ap-south-1.amazonaws.com/2018/10/aamir-khan-2-150x150.jpg").into(holder.circleImageView);
+            Picasso.get().load(R.drawable.icon_dp).into(holder.circleImageView);
         }
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                xpertListActivity.showXpertChat();
+                xpertListActivity.showXpertChat(xpertName.get(position), xpertImage.get(position));
             }
         });
     }
