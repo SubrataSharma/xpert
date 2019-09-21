@@ -1,7 +1,9 @@
 package com.pabitrarista.chatdialog;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +23,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.mannan.translateapi.Language;
 import com.mannan.translateapi.TranslateAPI;
 import com.pabitrarista.chatdialog.recyclerview.ChatViewAdapter;
@@ -49,8 +57,9 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     String TAG = "logtag";
 
-    RelativeLayout relativeLayout;
-    TextView textView;
+    CardView cardView_4thBucket;
+    RelativeLayout relativeLayout, relativeLayout_4thBucket;
+    TextView textView, textView_4thBucket;
     HorizontalScrollView horizontalScrollView;
     EditText editText;
 
@@ -64,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private SharedPreferences preferences;
 
     String xpertName, xpertImage;
+
+    FirebaseFirestore db;
+    private static final String XPERT_MASTER_KEY = "xpert_master";
+    private static final String NAME_KEY = "name";
+    private static final String PROFESSION_KEY = "profession";
+    Query content4thBucket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,27 +112,18 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
         init();
 
-        relativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = relativeLayout.getRootView().getHeight() - relativeLayout.getHeight();
-                //Log.i(TAG, "onGlobalLayout: " + relativeLayout.getRootView().getHeight() + " " + relativeLayout.getHeight() + " " + heightDiff);
-                if (heightDiff > 400) {
-                    textView.setVisibility(View.GONE);
-                    horizontalScrollView.setVisibility(View.GONE);
-                    //Log.i(TAG, "keyboard opened");
-                } else {
-                    textView.setVisibility(View.VISIBLE);
-                    horizontalScrollView.setVisibility(View.VISIBLE);
-                    //Log.i(TAG, "keyboard closed");
-                }
-            }
-        });
+        set4thBucket();
+
+        hideBucket();
     }
 
     private void init() {
+        cardView_4thBucket = findViewById(R.id.main_4thBucket_cardView);
+        cardView_4thBucket.setVisibility(View.GONE);
         relativeLayout = findViewById(R.id.main_relative_layout);
+        relativeLayout_4thBucket = findViewById(R.id.main_4thBucket_relativeLayout);
         textView = findViewById(R.id.main_text_view);
+        textView_4thBucket = findViewById(R.id.main_4thBucket_textView);
         horizontalScrollView = findViewById(R.id.main_horizontal_scroll_view);
         editText = findViewById(R.id.main_editText);
 
@@ -138,6 +144,52 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         aiDataService = new AIDataService(this, config);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        db = FirebaseFirestore.getInstance();
+    }
+
+    private void set4thBucket() {
+        content4thBucket = db.collection(XPERT_MASTER_KEY)
+                .whereEqualTo(NAME_KEY, xpertName);
+
+        content4thBucket.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    String str;
+                    try {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            str = document.getString(PROFESSION_KEY);
+                            str = str.replace('-', ' ');
+                            str = str.toUpperCase();
+                            textView_4thBucket.setText(str);
+                            cardView_4thBucket.setVisibility(View.VISIBLE);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void hideBucket() {
+        relativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = relativeLayout.getRootView().getHeight() - relativeLayout.getHeight();
+                //Log.i(TAG, "onGlobalLayout: " + relativeLayout.getRootView().getHeight() + " " + relativeLayout.getHeight() + " " + heightDiff);
+                if (heightDiff > 400) {
+                    textView.setVisibility(View.GONE);
+                    horizontalScrollView.setVisibility(View.GONE);
+                    //Log.i(TAG, "keyboard opened");
+                } else {
+                    textView.setVisibility(View.VISIBLE);
+                    horizontalScrollView.setVisibility(View.VISIBLE);
+                    //Log.i(TAG, "keyboard closed");
+                }
+            }
+        });
     }
 
     public void funFacts(View view) {
