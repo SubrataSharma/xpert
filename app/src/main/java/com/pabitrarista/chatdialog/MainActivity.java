@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                             str = str.replace('-', ' ');
                             str = str.toUpperCase();
                             textView_4thBucket.setText(str);
-                            cardView_4thBucket.setVisibility(View.VISIBLE);
+                            set4thBucketImage(str);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -171,6 +171,81 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 }
             }
         });
+    }
+
+    private void set4thBucketImage(String str) {
+        switch (str) {
+            case "ACTOR":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_movies);
+                break;
+            case "BADMINTON PLAYER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_badminton);
+                break;
+            case "BOOK WRITER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_writers);
+                break;
+            case "CHEF":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_food);
+                break;
+            case "CHOREOGRAPHER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_choreographers);
+                break;
+            case "COMEDIAN":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_comedy);
+                break;
+            case "CRICKETER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_cricket);
+                break;
+            case "DIRECTOR":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_movies);
+                break;
+            case "ENTREPRENEUR":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_business);
+                break;
+            case "FASHION DESIGNER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_fashion_design);
+                break;
+            case "FOOTBALLER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_football);
+                break;
+            case "INDUSTRIALIST":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_business);
+                break;
+            case "INVESTOR":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_business);
+                break;
+            case "MAKEUP ARTIST":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_beauty);
+                break;
+            case "MUSIC COMPOSER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_music_composers);
+                break;
+            case "NUTRITIONIST":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_nutrition);
+                break;
+            case "PAINTER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_paint);
+                break;
+            case "PHOTOGRAPHER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_photography);
+                break;
+            case "POLITICIAN":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_politics);
+                break;
+            case "SINGER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_singing);
+                break;
+            case "SPIRITUAL GURU":
+//                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_singing);
+                break;
+            case "TENNIS PLAYER":
+                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_tennis);
+                break;
+            case "VENTURE CAPITALIST":
+//                relativeLayout_4thBucket.setBackgroundResource(R.drawable.image_bucket_singing);
+                break;
+        }
+        cardView_4thBucket.setVisibility(View.VISIBLE);
     }
 
     private void hideBucket() {
