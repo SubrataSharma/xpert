@@ -39,7 +39,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ai.api.AIListener;
 import ai.api.AIServiceException;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private SharedPreferences preferences;
 
     String xpertName, xpertImage, xpertId;
+    String sessionId = null;
 
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private static final String PROFESSION_KEY = "profession";
     private static final String BUCKET_3_KEY = "bucket3";
     private static final String BUCKET_4_KEY = "bucket4";
+    private static final String SESSION_ID_KEY = "session_id";
     Query content4thBucket;
 
     @Override
@@ -120,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         set4thBucket();
 
         hideBucket();
+
+        createSessionId();
     }
 
     private void init() {
@@ -290,6 +296,25 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         });
     }
 
+    private void createSessionId() {
+        sessionId = xpertId + "|9564557783";
+
+        Map<String, Object> docData = new HashMap<>();
+        docData.put(SESSION_ID_KEY, sessionId);
+
+        db.collection(XPERT_MASTER_KEY)
+                .document(xpertId)
+                .collection("chats")
+                .document("9564557783")
+                .set(docData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i("sessionId", sessionId);
+                    }
+                });
+    }
+
     public void funFacts(View view) {
         Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
         in.putExtra("option", "personality");
@@ -357,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     public void callDialogFlow(String msg) {
-        new AiTask(MainActivity.this, aiDataService).execute(msg, "", "");
+        new AiTask(MainActivity.this, aiDataService).execute(msg, "", "", sessionId);
 //        aiService.startListening();
     }
 
@@ -450,9 +475,13 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
         String query = params[0];
         String event = params[1];
         String context = params[2];
+        String sessionId = params[3];
 
         if (!TextUtils.isEmpty(query)) {
             request.setQuery(query);
+            Log.i("query", query);
+            request.setSessionId(sessionId);
+            Log.i("sessionId", sessionId);
         }
 
         if (!TextUtils.isEmpty(event)) {
@@ -475,7 +504,7 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
     @Override
     protected void onPostExecute(final AIResponse response) {
         if (response != null) {
-            Log.i("result", response.getSessionId());
+            Log.i("sessionId", response.getSessionId());
             final Result result = response.getResult();
             final String speech = result.getFulfillment().getSpeech();
             //Toast.makeText(context.get(), speech, Toast.LENGTH_LONG).show();
