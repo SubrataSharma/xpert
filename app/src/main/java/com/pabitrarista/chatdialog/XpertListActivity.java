@@ -25,6 +25,7 @@ public class XpertListActivity extends AppCompatActivity {
     RecyclerView xpertRecyclerView;
     ArrayList<String> xpertName;
     ArrayList<String> xpertImage;
+    ArrayList<String> xpertId;
     XpertViewAdapter xpertViewAdapter;
 
     FirebaseFirestore db;
@@ -54,6 +55,7 @@ public class XpertListActivity extends AppCompatActivity {
         xpertRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         xpertName = new ArrayList<>();
         xpertImage = new ArrayList<>();
+        xpertId = new ArrayList<>();
 
         db = FirebaseFirestore.getInstance();
     }
@@ -65,28 +67,31 @@ public class XpertListActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    String name, image;
+                    String name, image, id;
                     xpertName.clear();
                     xpertImage.clear();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         name = document.getString(NAME_KEY);
                         image = document.getString(PROFILE_IMAGE_KEY);
+                        id = document.getId();
 
                         xpertName.add(name);
                         xpertImage.add(image);
+                        xpertId.add(id);
                     }
 
-                    xpertViewAdapter = new XpertViewAdapter(XpertListActivity.this, xpertName, xpertImage);
+                    xpertViewAdapter = new XpertViewAdapter(XpertListActivity.this, xpertName, xpertImage, xpertId);
                     xpertRecyclerView.setAdapter(xpertViewAdapter);
                 }
             }
         });
     }
 
-    public void showXpertChat(String xpertName, String xpertImage) {
+    public void showXpertChat(String xpertName, String xpertImage, String xpertId) {
         Intent in = new Intent(XpertListActivity.this, MainActivity.class);
         in.putExtra("xpertName", xpertName);
         in.putExtra("xpertImage", xpertImage);
+        in.putExtra("xpertId", xpertId);
         startActivity(in);
     }
 }

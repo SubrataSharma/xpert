@@ -141,7 +141,7 @@
                         android:id="@+id/main_4thBucket_relativeLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:onClick="cricket"
+                        android:onClick="bucket4"
                         tools:background="@drawable/image_cricket" />
 
                     <RelativeLayout

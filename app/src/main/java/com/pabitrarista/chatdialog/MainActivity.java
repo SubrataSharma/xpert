@@ -24,7 +24,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -72,12 +74,14 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     private SharedPreferences preferences;
 
-    String xpertName, xpertImage;
+    String xpertName, xpertImage, xpertId;
 
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
     private static final String NAME_KEY = "name";
     private static final String PROFESSION_KEY = "profession";
+    private static final String BUCKET_3_KEY = "bucket3";
+    private static final String BUCKET_4_KEY = "bucket4";
     Query content4thBucket;
 
     @Override
@@ -87,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
         xpertName = getIntent().getStringExtra("xpertName");
         xpertImage = getIntent().getStringExtra("xpertImage");
+        xpertId = getIntent().getStringExtra("xpertId");
 
         this.getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -149,28 +154,46 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     private void set4thBucket() {
-        content4thBucket = db.collection(XPERT_MASTER_KEY)
-                .whereEqualTo(NAME_KEY, xpertName);
+//        content4thBucket = db.collection(XPERT_MASTER_KEY)
+//                .whereEqualTo(NAME_KEY, xpertName);
+//
+//        content4thBucket.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    String str;
+//                    try {
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            str = document.getString(PROFESSION_KEY);
+//                            str = str.replace('-', ' ');
+//                            str = str.toUpperCase();
+//                            textView_4thBucket.setText(str);
+//                            set4thBucketImage(str);
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        });
 
-        content4thBucket.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    String str;
-                    try {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            str = document.getString(PROFESSION_KEY);
+        db.collection(XPERT_MASTER_KEY)
+                .document(xpertId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        try {
+                            String str = documentSnapshot.getString(PROFESSION_KEY);
                             str = str.replace('-', ' ');
                             str = str.toUpperCase();
                             textView_4thBucket.setText(str);
                             set4thBucketImage(str);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                }
-            }
-        });
+                });
     }
 
     private void set4thBucketImage(String str) {
@@ -270,24 +293,32 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     public void funFacts(View view) {
         Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
         in.putExtra("option", "personality");
+        in.putExtra("xpertId", xpertId);
+        in.putExtra("bucket", BUCKET_3_KEY);
         startActivity(in);
     }
 
     public void opinions(View view) {
         Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
         in.putExtra("option", "opinion");
+        in.putExtra("xpertId", xpertId);
+        in.putExtra("bucket", BUCKET_3_KEY);
         startActivity(in);
     }
 
     public void life(View view) {
         Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
         in.putExtra("option", "journey");
+        in.putExtra("xpertId", xpertId);
+        in.putExtra("bucket", BUCKET_4_KEY);
         startActivity(in);
     }
 
-    public void cricket(View view) {
+    public void bucket4(View view) {
         Intent in = new Intent(MainActivity.this, AskScreen2Activity.class);
         in.putExtra("option", "pro");
+        in.putExtra("xpertId", xpertId);
+        in.putExtra("bucket", BUCKET_4_KEY);
         startActivity(in);
     }
 
@@ -444,6 +475,7 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
     @Override
     protected void onPostExecute(final AIResponse response) {
         if (response != null) {
+            Log.i("result", response.getSessionId());
             final Result result = response.getResult();
             final String speech = result.getFulfillment().getSpeech();
             //Toast.makeText(context.get(), speech, Toast.LENGTH_LONG).show();

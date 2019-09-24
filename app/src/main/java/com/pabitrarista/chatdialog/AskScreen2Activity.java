@@ -28,6 +28,8 @@ import java.util.Set;
 public class AskScreen2Activity extends AppCompatActivity {
 
     String option = null;
+    String xpertId = null;
+    String bucket = null;
     private SharedPreferences preferences;
 
     FirebaseFirestore db;
@@ -60,6 +62,8 @@ public class AskScreen2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_ask_screen2);
 
         option = getIntent().getStringExtra("option");
+        xpertId = getIntent().getStringExtra("xpertId");
+        bucket = getIntent().getStringExtra("bucket");
 
         this.getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -96,7 +100,7 @@ public class AskScreen2Activity extends AppCompatActivity {
 
     private void setBucket() {
         bucket2 = db.collection(XPERT_MASTER_KEY)
-                .document(A_R_RAHMAN_KEY)
+                .document(xpertId)
                 .collection(RESPONSES_KEY)
                 .whereEqualTo(BUCKET_1_KEY, "exp")
                 .whereEqualTo(BUCKET_2_KEY, option)
@@ -108,7 +112,7 @@ public class AskScreen2Activity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     String str;
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        str = document.getString(BUCKET_3_KEY);
+                        str = document.getString(bucket);
                         bucketArrayList.add(str);
                     }
 
@@ -148,7 +152,7 @@ public class AskScreen2Activity extends AppCompatActivity {
 
     public void setQuestion(String bucket3Content) {
         bucket3 = bucket2
-                .whereEqualTo(BUCKET_3_KEY, bucket3Content);
+                .whereEqualTo(bucket, bucket3Content);
 
         bucket3.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

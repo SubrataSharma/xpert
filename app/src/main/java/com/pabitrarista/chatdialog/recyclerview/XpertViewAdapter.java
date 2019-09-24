@@ -18,11 +18,13 @@ public class XpertViewAdapter extends RecyclerView.Adapter<XpertViewHolder> {
     private XpertListActivity xpertListActivity;
     private ArrayList<String> xpertName;
     private ArrayList<String> xpertImage;
+    private ArrayList<String> xpertId;
 
-    public XpertViewAdapter(XpertListActivity xpertListActivity, ArrayList<String> xpertName, ArrayList<String> xpertImage) {
+    public XpertViewAdapter(XpertListActivity xpertListActivity, ArrayList<String> xpertName, ArrayList<String> xpertImage, ArrayList<String> xpertId) {
         this.xpertListActivity = xpertListActivity;
         this.xpertName = xpertName;
         this.xpertImage = xpertImage;
+        this.xpertId = xpertId;
     }
 
     @NonNull
@@ -46,7 +48,7 @@ public class XpertViewAdapter extends RecyclerView.Adapter<XpertViewHolder> {
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                xpertListActivity.showXpertChat(xpertName.get(position), xpertImage.get(position));
+                xpertListActivity.showXpertChat(xpertName.get(position), xpertImage.get(position), xpertId.get(position));
             }
         });
     }
