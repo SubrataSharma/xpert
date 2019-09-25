@@ -510,25 +510,31 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
             //Toast.makeText(context.get(), speech, Toast.LENGTH_LONG).show();
             //result.getResolvedQuery()
 
-            if (result.getResolvedQuery().equals("Image")) {
-                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_IMAGE, "http://rma-upload.s3.amazonaws.com/2019_08_22_11_11_59banner.png");
-                mainActivity.chatViewData.add(msg);
-                int newMsgPosition = mainActivity.chatViewData.size() - 1;
-                mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-                mainActivity.recyclerView.scrollToPosition(newMsgPosition);
-            } /*else if (result.getResolvedQuery().equals("Video")) {
-                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, "TqUbiOgEb0w");
-                msg.setStartSeconds(88);
-                mainActivity.chatViewData.add(msg);
-                int newMsgPosition = mainActivity.chatViewData.size() - 1;
-                mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-                mainActivity.recyclerView.scrollToPosition(newMsgPosition);
-            }*/ else {
-                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, speech);
-                mainActivity.chatViewData.add(msg);
-                int newMsgPosition = mainActivity.chatViewData.size() - 1;
-                mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-                mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+            //String test = "ABC DEF|UJJWAL|MAITY";
+            String[] splitSpeech = speech.split("\\|");
+            for (String s : splitSpeech) {
+                Log.i("RESULT", s);
+
+                if (result.getResolvedQuery().equals("Image")) {
+                    ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_IMAGE, "http://rma-upload.s3.amazonaws.com/2019_08_22_11_11_59banner.png");
+                    mainActivity.chatViewData.add(msg);
+                    int newMsgPosition = mainActivity.chatViewData.size() - 1;
+                    mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+                    mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+                } /*else if (result.getResolvedQuery().equals("Video")) {
+                    ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, "TqUbiOgEb0w");
+                    msg.setStartSeconds(88);
+                    mainActivity.chatViewData.add(msg);
+                    int newMsgPosition = mainActivity.chatViewData.size() - 1;
+                    mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+                    mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+                }*/ else {
+                    ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s);
+                    mainActivity.chatViewData.add(msg);
+                    int newMsgPosition = mainActivity.chatViewData.size() - 1;
+                    mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+                    mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+                }
             }
         }
     }
