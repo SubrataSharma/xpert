@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
-            android:text="ASK ABOUT VIRAT'S" />
+            android:text="ASK ABOUT" />
 
         <HorizontalScrollView
             android:id="@+id/main_horizontal_scroll_view"

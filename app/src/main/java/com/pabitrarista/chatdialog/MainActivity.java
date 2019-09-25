@@ -478,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             chatViewAdapter.notifyItemInserted(newMsgPosition);
             recyclerView.scrollToPosition(newMsgPosition);
 
-            if (response_type.equals("video")) {
+            if (response_type.equals("youtube")) {
                 msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
                 msg.setStartSeconds(video_start);
                 chatViewData.add(msg);

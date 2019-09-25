@@ -43,7 +43,7 @@ public class AskScreen2Activity extends AppCompatActivity {
     private static final String ANSWER_STATUS_KEY = "answer_status";
     private static final String PHRASE_KEY = "phrase"; //for answer_status = default
     private static final String QUESTION_KEY = "question"; //for answer_status = custom
-    private static final String RESPONSE_TYPE_KEY = "response_type"; //text || url || video
+    private static final String RESPONSE_TYPE_KEY = "response_type"; //text || url || youtube
     private static final String RESPONSE_KEY = "response";
     private static final String ANS_START_KEY = "ans_start";
     Query bucket2, bucket3, question;
@@ -189,7 +189,7 @@ public class AskScreen2Activity extends AppCompatActivity {
                             response = document.getString(RESPONSE_KEY);
                         } else if (response_type.equals("url")) {
                             response = document.getString(RESPONSE_KEY);
-                        } else if (response_type.equals("video")) {
+                        } else if (response_type.equals("youtube")) {
                             response = document.getString(RESPONSE_KEY);
                             video_start = document.getLong(ANS_START_KEY).intValue();
                         }
