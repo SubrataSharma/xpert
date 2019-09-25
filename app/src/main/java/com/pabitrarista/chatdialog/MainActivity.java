@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     String xpertName, xpertImage, xpertId;
     String sessionId = null;
+    String userPhone = "9564557783";
 
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
@@ -85,7 +87,16 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private static final String PROFESSION_KEY = "profession";
     private static final String BUCKET_3_KEY = "bucket3";
     private static final String BUCKET_4_KEY = "bucket4";
+    private static final String FIRST_NAME_KEY = "first_name";
+    private static final String LAST_NAME_KEY = "last_name";
+    private static final String PROFILE_PIC_KEY = "profile_pic";
+    private static final String GENDER_KEY = "gender";
+    private static final String SENDER_ID_KEY = "sender_id";
     private static final String SESSION_ID_KEY = "session_id";
+    private static final String LAST_CHAT_ON_KEY = "last_chat_on";
+    private static final String STARTED_ON_KEY = "started_on";
+    private static final String SOURCE_KEY = "source";
+    private static final String USER_PERSONA_KEY = "user_persona";
     Query content4thBucket;
 
     @Override
@@ -297,20 +308,57 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     private void createSessionId() {
-        sessionId = xpertId + "|9564557783";
-
-        Map<String, Object> docData = new HashMap<>();
-        docData.put(SESSION_ID_KEY, sessionId);
+        sessionId = xpertId + "|" + userPhone;
 
         db.collection(XPERT_MASTER_KEY)
                 .document(xpertId)
                 .collection("chats")
-                .document("9564557783")
-                .set(docData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                .document(userPhone)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.i("sessionId", sessionId);
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                        String senderId = documentSnapshot.getString(SENDER_ID_KEY);
+
+                        if (senderId == null) {
+                            Map<String, Object> docData = new HashMap<>();
+                            docData.put(FIRST_NAME_KEY, null);
+                            docData.put(LAST_NAME_KEY, null);
+                            docData.put(PROFILE_PIC_KEY, null);
+                            docData.put(GENDER_KEY, null);
+                            docData.put(SENDER_ID_KEY, userPhone);
+                            docData.put(SESSION_ID_KEY, sessionId);
+                            docData.put(LAST_CHAT_ON_KEY, FieldValue.serverTimestamp());
+                            docData.put(STARTED_ON_KEY, FieldValue.serverTimestamp());
+                            docData.put(SOURCE_KEY, "messenger");
+                            docData.put(USER_PERSONA_KEY, "Fan");
+
+                            db.collection(XPERT_MASTER_KEY)
+                                    .document(xpertId)
+                                    .collection("chats")
+                                    .document(userPhone)
+                                    .set(docData)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                        }
+                                    });
+                        } else {
+                            Map<String, Object> docData = new HashMap<>();
+                            docData.put(LAST_CHAT_ON_KEY, FieldValue.serverTimestamp());
+
+                            db.collection(XPERT_MASTER_KEY)
+                                    .document(xpertId)
+                                    .collection("chats")
+                                    .document(userPhone)
+                                    .update(docData)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                        }
+                                    });
+                        }
                     }
                 });
     }
