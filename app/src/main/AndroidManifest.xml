@@ -17,7 +17,11 @@
 
         <activity android:name=".MainActivity" />
 
-        <activity android:name=".XpertListActivity">
+        <activity android:name=".XpertListActivity" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
