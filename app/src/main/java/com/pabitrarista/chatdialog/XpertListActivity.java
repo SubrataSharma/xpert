@@ -26,12 +26,14 @@ public class XpertListActivity extends AppCompatActivity {
     ArrayList<String> xpertName;
     ArrayList<String> xpertImage;
     ArrayList<String> xpertId;
+    ArrayList<String> xpertShortBio;
     XpertViewAdapter xpertViewAdapter;
 
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
     private static final String NAME_KEY = "name";
     private static final String PROFILE_IMAGE_KEY = "profile_image";
+    private static final String SHORT_BIO_KEY = "short_bio";
     Query xpertDetails;
 
     @Override
@@ -56,6 +58,7 @@ public class XpertListActivity extends AppCompatActivity {
         xpertName = new ArrayList<>();
         xpertImage = new ArrayList<>();
         xpertId = new ArrayList<>();
+        xpertShortBio = new ArrayList<>();
 
         db = FirebaseFirestore.getInstance();
     }
@@ -67,20 +70,22 @@ public class XpertListActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    String name, image, id;
+                    String name, image, id, bio;
                     xpertName.clear();
                     xpertImage.clear();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         name = document.getString(NAME_KEY);
                         image = document.getString(PROFILE_IMAGE_KEY);
                         id = document.getId();
+                        bio = document.getString(SHORT_BIO_KEY);
 
                         xpertName.add(name);
                         xpertImage.add(image);
                         xpertId.add(id);
+                        xpertShortBio.add(bio);
                     }
 
-                    xpertViewAdapter = new XpertViewAdapter(XpertListActivity.this, xpertName, xpertImage, xpertId);
+                    xpertViewAdapter = new XpertViewAdapter(XpertListActivity.this, xpertName, xpertImage, xpertId, xpertShortBio);
                     xpertRecyclerView.setAdapter(xpertViewAdapter);
                 }
             }

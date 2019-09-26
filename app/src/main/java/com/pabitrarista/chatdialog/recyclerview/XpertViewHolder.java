@@ -14,7 +14,7 @@ class XpertViewHolder extends RecyclerView.ViewHolder {
 
     LinearLayout linearLayout;
     CircleImageView circleImageView;
-    TextView textView;
+    TextView textView, textView2;
 
     XpertViewHolder(View itemView) {
         super(itemView);
@@ -22,5 +22,6 @@ class XpertViewHolder extends RecyclerView.ViewHolder {
         linearLayout = itemView.findViewById(R.id.xpert_view_linear_layout);
         circleImageView = itemView.findViewById(R.id.xpert_view_profile_image);
         textView = itemView.findViewById(R.id.xpert_view_profile_name);
+        textView2 = itemView.findViewById(R.id.xpert_view_profile_bio);
     }
 }

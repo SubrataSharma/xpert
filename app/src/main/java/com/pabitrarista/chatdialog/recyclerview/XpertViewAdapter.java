@@ -19,12 +19,14 @@ public class XpertViewAdapter extends RecyclerView.Adapter<XpertViewHolder> {
     private ArrayList<String> xpertName;
     private ArrayList<String> xpertImage;
     private ArrayList<String> xpertId;
+    private ArrayList<String> xpertShortBio;
 
-    public XpertViewAdapter(XpertListActivity xpertListActivity, ArrayList<String> xpertName, ArrayList<String> xpertImage, ArrayList<String> xpertId) {
+    public XpertViewAdapter(XpertListActivity xpertListActivity, ArrayList<String> xpertName, ArrayList<String> xpertImage, ArrayList<String> xpertId, ArrayList<String> xpertShortBio) {
         this.xpertListActivity = xpertListActivity;
         this.xpertName = xpertName;
         this.xpertImage = xpertImage;
         this.xpertId = xpertId;
+        this.xpertShortBio = xpertShortBio;
     }
 
     @NonNull
@@ -39,6 +41,7 @@ public class XpertViewAdapter extends RecyclerView.Adapter<XpertViewHolder> {
     public void onBindViewHolder(@NonNull final XpertViewHolder holder, final int position) {
 
         holder.textView.setText(xpertName.get(position));
+        holder.textView2.setText(xpertShortBio.get(position));
         try {
             Picasso.get().load(xpertImage.get(position)).into(holder.circleImageView);
         } catch (Exception e) {
