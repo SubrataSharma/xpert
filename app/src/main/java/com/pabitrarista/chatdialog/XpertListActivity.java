@@ -31,6 +31,7 @@ public class XpertListActivity extends AppCompatActivity {
 
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
+    private static final String ACTIVE_KEY = "active";
     private static final String NAME_KEY = "name";
     private static final String PROFILE_IMAGE_KEY = "profile_image";
     private static final String SHORT_BIO_KEY = "short_bio";
@@ -64,7 +65,8 @@ public class XpertListActivity extends AppCompatActivity {
     }
 
     private void setXpertList() {
-        xpertDetails = db.collection(XPERT_MASTER_KEY);
+        xpertDetails = db.collection(XPERT_MASTER_KEY)
+                .whereEqualTo(ACTIVE_KEY, "2");
 
         xpertDetails.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
