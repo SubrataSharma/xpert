@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.login_btn:
                 name = nameEditText.getText().toString();
                 phone = phoneEditText.getText().toString();
-                Intent in = new Intent(LoginActivity.this, XpertListActivity.class);
+                Intent in = new Intent(LoginActivity.this, OtpActivity.class);
                 startActivity(in);
         }
     }

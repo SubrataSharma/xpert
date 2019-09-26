@@ -20,6 +20,10 @@
         <activity android:name=".XpertListActivity" />
 
         <activity
+            android:name=".OtpActivity"
+            android:theme="@style/AppTheme2" />
+
+        <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme2">
             <intent-filter>
