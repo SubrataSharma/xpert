@@ -308,9 +308,9 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     private void createSessionId() {
-        sessionId = xpertId + "|" + userPhone;
+        sessionId = xpertId + "|" + userPhone + "|Fan";
 
-        db.collection(XPERT_MASTER_KEY)
+        /*db.collection(XPERT_MASTER_KEY)
                 .document(xpertId)
                 .collection("chats")
                 .document(userPhone)
@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                                     });
                         }
                     }
-                });
+                });*/
     }
 
     public void funFacts(View view) {
