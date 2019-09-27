@@ -19,6 +19,7 @@ import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     TextView textView, textView_4thBucket;
     HorizontalScrollView horizontalScrollView;
     EditText editText;
+    LinearLayout linearLayout;
+    RelativeLayout relativeLayoutUserIntro;
+    TextView textViewIntro1, textViewIntro2, textViewIntro3;
 
     RecyclerView recyclerView;
     final List<ChatViewData> chatViewData = new ArrayList<>();
@@ -80,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     String xpertName, xpertImage, xpertId;
     String sessionId = null;
     String userPhone = "9564557783";
+
+    String userInterest = "null";
 
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
@@ -97,7 +103,9 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private static final String STARTED_ON_KEY = "started_on";
     private static final String SOURCE_KEY = "source";
     private static final String USER_PERSONA_KEY = "user_persona";
-    Query content4thBucket;
+    private static final String PROFESION_KEY = "profession";
+    private static final String INTEREST_KEY = "interest";
+    Query content4thBucket, profession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,11 +140,11 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
         init();
 
+        showUserIntro();
+
         set4thBucket();
 
         hideBucket();
-
-        createSessionId();
     }
 
     private void init() {
@@ -148,6 +156,11 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         textView_4thBucket = findViewById(R.id.main_4thBucket_textView);
         horizontalScrollView = findViewById(R.id.main_horizontal_scroll_view);
         editText = findViewById(R.id.main_editText);
+        linearLayout = findViewById(R.id.main_linear_layout);
+        relativeLayoutUserIntro = findViewById(R.id.main_user_intro_relativeLayout);
+        textViewIntro1 = findViewById(R.id.main_user_intro_1);
+        textViewIntro2 = findViewById(R.id.main_user_intro_2);
+        textViewIntro3 = findViewById(R.id.main_user_intro_3);
 
         recyclerView = findViewById(R.id.main_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -168,6 +181,108 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         db = FirebaseFirestore.getInstance();
+    }
+
+    private void showUserIntro() {
+        userInterest = preferences.getString("userInterestAbout" + xpertId, "null");
+
+        if (!userInterest.equals("null")) {
+            relativeLayoutUserIntro.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            linearLayout.setVisibility(View.VISIBLE);
+            createSessionId(userInterest);
+            return;
+        }
+
+        db.collection(XPERT_MASTER_KEY)
+                .document(xpertId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        try {
+                            String str = documentSnapshot.getString(PROFESSION_KEY);
+                            if (str != null) {
+                                profession = db
+                                        .collection(PROFESION_KEY)
+                                        .whereEqualTo(PROFESION_KEY, str);
+
+                                profession.get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    String prof, inters;
+                                                    try {
+                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                            prof = document.getString(PROFESSION_KEY);
+                                                            inters = document.getString(INTEREST_KEY);
+                                                            prof = prof.replace('-', ' ');
+                                                            inters = inters.toLowerCase();
+                                                            addTextView(prof, inters);
+                                                        }
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        });
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+    private void addTextView(final String prof, final String inters) {
+        textViewIntro1.setText("I am / want to be a " + prof);
+        textViewIntro2.setText("I am interested in " + inters);
+//        Toast.makeText(this, prof + "  " + inters, Toast.LENGTH_SHORT).show();
+
+        relativeLayoutUserIntro.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        linearLayout.setVisibility(View.GONE);
+
+        textViewIntro1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                relativeLayoutUserIntro.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("userInterestAbout" + xpertId, prof);
+                editor.apply();
+                createSessionId(prof);
+            }
+        });
+        textViewIntro2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                relativeLayoutUserIntro.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("userInterestAbout" + xpertId, inters);
+                editor.apply();
+                createSessionId(inters);
+            }
+        });
+        textViewIntro3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                relativeLayoutUserIntro.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("userInterestAbout" + xpertId, "fan");
+                editor.apply();
+                createSessionId("fan");
+            }
+        });
     }
 
     private void set4thBucket() {
@@ -307,8 +422,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         });
     }
 
-    private void createSessionId() {
-        sessionId = xpertId + "|" + userPhone + "|Fan";
+    private void createSessionId(String userInterest) {
+        sessionId = xpertId + "|" + userPhone + "|" + userInterest;
 
         /*db.collection(XPERT_MASTER_KEY)
                 .document(xpertId)
