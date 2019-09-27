@@ -558,32 +558,84 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
             //Toast.makeText(context.get(), speech, Toast.LENGTH_LONG).show();
             //result.getResolvedQuery()
 
-            //String test = "ABC DEF|UJJWAL|MAITY";
-            String[] splitSpeech = speech.split("\\|");
+//            text -- text{}content separated by {|}
+//            image -- image{}content  separated by {|}
+//            bubble separation {|}
+//            String ex = "text{}content1{|}content2{|}content3";
+//            youtube -- youtube{}video_id(|)start(|)end
+//            String ex = "youtube{}TqUbiOgEb0w(|)88(|)200";
+
+            Log.i("RESULT", speech);
+            String speech2 = speech.replace("{}", "|");
+            String[] splitSpeech = speech2.split("\\|");
+
+            String type = null;
+            String url = null;
+            int startTime = 0, stopTime = 0;
+            int count = 0;
+
             for (String s : splitSpeech) {
                 Log.i("RESULT", s);
+                s = s.replace("{", "");
+                s = s.replace("}", "");
+                s = s.replace("(", "");
+                s = s.replace(")", "");
 
-                if (result.getResolvedQuery().equals("Image")) {
-                    ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_IMAGE, "http://rma-upload.s3.amazonaws.com/2019_08_22_11_11_59banner.png");
-                    mainActivity.chatViewData.add(msg);
-                    int newMsgPosition = mainActivity.chatViewData.size() - 1;
-                    mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-                    mainActivity.recyclerView.scrollToPosition(newMsgPosition);
-                } /*else if (result.getResolvedQuery().equals("Video")) {
-                    ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, "TqUbiOgEb0w");
-                    msg.setStartSeconds(88);
-                    mainActivity.chatViewData.add(msg);
-                    int newMsgPosition = mainActivity.chatViewData.size() - 1;
-                    mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-                    mainActivity.recyclerView.scrollToPosition(newMsgPosition);
-                }*/ else {
-                    ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s);
-                    mainActivity.chatViewData.add(msg);
-                    int newMsgPosition = mainActivity.chatViewData.size() - 1;
-                    mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-                    mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+                if (s.equals("text") || s.equals("image") || s.equals("youtube")) {
+                    type = s;
+                    continue;
+                }
+
+                try {
+                    if (type.equals("text")) {
+                        showText(s);
+                        type = null;
+                    } else if (type.equals("image")) {
+                        showImage(s);
+                        type = null;
+                    } else if (type.equals("youtube")) {
+                        if (count == 0) {
+                            url = s;
+                            count++;
+                        } else if (count == 1) {
+                            startTime = Integer.parseInt(s);
+                            count++;
+                        } else if (count == 2) {
+                            stopTime = Integer.parseInt(s);
+                            count = 0;
+                            showVideo(url, startTime, stopTime);
+                            type = null;
+                        }
+                    }
+                } catch (Exception e) {
+                    showText(s);
                 }
             }
         }
+    }
+
+    private void showText(String text) {
+        ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, text);
+        mainActivity.chatViewData.add(msg);
+        int newMsgPosition = mainActivity.chatViewData.size() - 1;
+        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+    }
+
+    private void showImage(String url) {
+        ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_IMAGE, url);
+        mainActivity.chatViewData.add(msg);
+        int newMsgPosition = mainActivity.chatViewData.size() - 1;
+        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+    }
+
+    private void showVideo(String url, int startTime, int stopTime) {
+        ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, url);
+        msg.setStartSeconds(startTime);
+        mainActivity.chatViewData.add(msg);
+        int newMsgPosition = mainActivity.chatViewData.size() - 1;
+        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
     }
 }
