@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     String xpertName, xpertImage, xpertId;
     String sessionId = null;
-    String userPhone = "9564557783";
+    String userPhone, userName;
 
     String userInterest = "null";
 
@@ -111,6 +111,10 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        userPhone = preferences.getString("userPhone", "null");
+        userName = preferences.getString("userName", "null");
 
         xpertName = getIntent().getStringExtra("xpertName");
         xpertImage = getIntent().getStringExtra("xpertImage");
@@ -177,8 +181,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         aiService = AIService.getService(this, config);
         aiService.setListener(this);
         aiDataService = new AIDataService(this, config);
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         db = FirebaseFirestore.getInstance();
     }
