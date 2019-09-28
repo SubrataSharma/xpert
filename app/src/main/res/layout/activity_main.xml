@@ -24,7 +24,7 @@
             android:padding="10dp"
             android:text="INTRODUCE  YOURSELF:"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,9 +37,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_light"
-                android:padding="5dp"
+                android:paddingStart="5dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="10dp"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="24sp"
                 tools:text="I am / want to be a cricketer" />
 
             <TextView
@@ -52,9 +55,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_light"
-                android:padding="5dp"
+                android:paddingStart="5dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="10dp"
                 android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="24sp"
                 tools:text="I enjoy playing cricket" />
 
             <TextView
@@ -67,10 +73,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_light"
-                android:padding="5dp"
+                android:paddingStart="5dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="10dp"
                 android:text="I am your fan"
                 android:textColor="@color/black"
-                android:textSize="25sp" />
+                android:textSize="24sp" />
         </LinearLayout>
     </RelativeLayout>
 
