@@ -3,7 +3,7 @@ package com.pabitrarista.chatdialog.recyclerview;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +14,8 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import pl.droidsonroids.gif.GifImageView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -68,8 +70,9 @@ public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         else if (chatViewData1.MSG_TYPE_VIDEO.equals(chatViewData1.getMsgType())) {
             final String videoId = chatViewData1.getMsgContent();
             final int startSeconds = chatViewData1.getStartSeconds();
-            final ImageView leftPlay = holder.leftPlay;
-            final ImageView leftPause = holder.leftPause;
+            final RelativeLayout relativeLayoutPlay = holder.playRelativeLayout;
+            final RelativeLayout relativeLayoutPause = holder.pauseRelativeLayout;
+            final GifImageView gifImageView = holder.gifImageView;
             holder.youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                 @Override
                 public void onReady(@NonNull final YouTubePlayer youTubePlayer) {
@@ -79,19 +82,23 @@ public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 //                    youTubePlayer.play();
 //                    youTubePlayer.pause();
 
-                    leftPlay.setOnClickListener(new View.OnClickListener() {
+
+                    relativeLayoutPlay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            leftPlay.setVisibility(View.GONE);
-                            leftPause.setVisibility(View.VISIBLE);
+                            relativeLayoutPlay.setVisibility(View.GONE);
+                            relativeLayoutPause.setVisibility(View.VISIBLE);
+                            gifImageView.setVisibility(View.VISIBLE);
                             youTubePlayer.play();
                         }
                     });
-                    leftPause.setOnClickListener(new View.OnClickListener() {
+
+                    relativeLayoutPause.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            leftPause.setVisibility(View.GONE);
-                            leftPlay.setVisibility(View.VISIBLE);
+                            relativeLayoutPause.setVisibility(View.GONE);
+                            relativeLayoutPlay.setVisibility(View.VISIBLE);
+                            gifImageView.setVisibility(View.GONE);
                             youTubePlayer.pause();
                         }
                     });

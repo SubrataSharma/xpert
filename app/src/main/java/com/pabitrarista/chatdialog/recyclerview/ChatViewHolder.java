@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.pabitrarista.chatdialog.R;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import pl.droidsonroids.gif.GifImageView;
+
 class ChatViewHolder extends RecyclerView.ViewHolder {
 
     TextView leftMsgTextView;
@@ -17,9 +19,9 @@ class ChatViewHolder extends RecyclerView.ViewHolder {
 
     ImageView leftImageView;
 
-    ImageView leftPlay, leftPause;
-    RelativeLayout relativeLayout;
+    RelativeLayout relativeLayout, playRelativeLayout, pauseRelativeLayout;
     YouTubePlayerView youTubePlayerView;
+    GifImageView gifImageView;
 
     ChatViewHolder(View itemView) {
         super(itemView);
@@ -29,9 +31,10 @@ class ChatViewHolder extends RecyclerView.ViewHolder {
 
         leftImageView = itemView.findViewById(R.id.view_chat_item_image);
 
-        leftPlay = itemView.findViewById(R.id.view_chat_item_play);
-        leftPause = itemView.findViewById(R.id.view_chat_item_pause);
         relativeLayout = itemView.findViewById(R.id.view_chat_item_relative_layout);
+        playRelativeLayout = itemView.findViewById(R.id.view_chat_item_play_layout);
+        pauseRelativeLayout = itemView.findViewById(R.id.view_chat_item_pause_layout);
         youTubePlayerView = itemView.findViewById(R.id.youtube_player_view);
+        gifImageView = itemView.findViewById(R.id.view_chat_item_play_pause_gif);
     }
 }
