@@ -215,12 +215,13 @@
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
 
-                    <RelativeLayout
-                        android:id="@+id/main_4thBucket_relativeLayout"
+                    <ImageView
+                        android:id="@+id/main_4thBucket_imageView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:onClick="bucket4"
-                        tools:background="@drawable/image_cricket" />
+                        android:scaleType="fitXY"
+                        tools:src="@drawable/image_cricket" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
