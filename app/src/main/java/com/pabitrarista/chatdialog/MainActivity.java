@@ -257,6 +257,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 editor.putString("userInterestAbout" + xpertId, prof);
                 editor.apply();
                 createSessionId(prof);
+
+                //TODO: 1
             }
         });
         textViewIntro2.setOnClickListener(new View.OnClickListener() {
@@ -270,6 +272,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 editor.putString("userInterestAbout" + xpertId, inters);
                 editor.apply();
                 createSessionId(inters);
+
+                // TODO: 2
             }
         });
         textViewIntro3.setOnClickListener(new View.OnClickListener() {
@@ -283,6 +287,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 editor.putString("userInterestAbout" + xpertId, "fan");
                 editor.apply();
                 createSessionId("fan");
+
+                //TODO: 3
             }
         });
     }
@@ -311,6 +317,24 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 //            }
 //        });
 
+//        db.collection(XPERT_MASTER_KEY)
+//                .document(xpertId)
+//                .get()
+//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        try {
+//                            String str = documentSnapshot.getString(PROFESSION_KEY);
+//                            str = str.replace('-', ' ');
+//                            str = str.toUpperCase();
+//                            textView_4thBucket.setText(str);
+//                            set4thBucketImage(str);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                });
+
         db.collection(XPERT_MASTER_KEY)
                 .document(xpertId)
                 .get()
@@ -319,10 +343,33 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         try {
                             String str = documentSnapshot.getString(PROFESSION_KEY);
-                            str = str.replace('-', ' ');
-                            str = str.toUpperCase();
-                            textView_4thBucket.setText(str);
-                            set4thBucketImage(str);
+                            if (str != null) {
+                                profession = db
+                                        .collection(PROFESION_KEY)
+                                        .whereEqualTo(PROFESION_KEY, str);
+
+                                profession.get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    String prof, inters;
+                                                    try {
+                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                            prof = document.getString(PROFESSION_KEY);
+                                                            inters = document.getString(INTEREST_KEY);
+                                                            inters = inters.replace('-', ' ');
+                                                            inters = inters.toUpperCase();
+                                                            textView_4thBucket.setText(inters);
+                                                            set4thBucketImage(inters);
+                                                        }
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        });
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -535,19 +582,21 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
             // Add a new sent message to the list.
             ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_SENT, msgEditText);
-            chatViewData.add(msg);
-            int newMsgPosition = chatViewData.size() - 1;
+            recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+//            chatViewData.add(msg);
+//            int newMsgPosition = chatViewData.size() - 1;
             // Notify recycler view insert one new data.
-            chatViewAdapter.notifyItemInserted(newMsgPosition);
+//            chatViewAdapter.notifyItemInserted(newMsgPosition);
             // Scroll RecyclerView to the last message.
-            recyclerView.scrollToPosition(newMsgPosition);
+//            recyclerView.scrollToPosition(newMsgPosition);
 
             editText.setText("");
         }
     }
 
     public void callDialogFlow(String msg) {
-        new AiTask(MainActivity.this, aiDataService).execute(msg, "", "", sessionId);
+        int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
+        new AiTask(MainActivity.this, aiDataService, itemInsertPosition).execute(msg, "", "", sessionId);
 //        aiService.startListening();
     }
 
@@ -590,24 +639,27 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         if (response_type != null && response != null && !response.equals("")) {
 
             ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_SENT, question_content);
-            chatViewData.add(msg);
-            int newMsgPosition = chatViewData.size() - 1;
-            chatViewAdapter.notifyItemInserted(newMsgPosition);
-            recyclerView.scrollToPosition(newMsgPosition);
+//            chatViewData.add(msg);
+//            int newMsgPosition = chatViewData.size() - 1;
+//            chatViewAdapter.notifyItemInserted(newMsgPosition);
+//            recyclerView.scrollToPosition(newMsgPosition);
+            recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
 
             if (response_type.equals("youtube")) {
                 msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
                 msg.setStartSeconds(video_start);
-                chatViewData.add(msg);
-                newMsgPosition = chatViewData.size() - 1;
-                chatViewAdapter.notifyItemInserted(newMsgPosition);
-                recyclerView.scrollToPosition(newMsgPosition);
+//                chatViewData.add(msg);
+//                newMsgPosition = chatViewData.size() - 1;
+//                chatViewAdapter.notifyItemInserted(newMsgPosition);
+//                recyclerView.scrollToPosition(newMsgPosition);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             } else if (response_type.equals("text")) {
                 msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, response);
-                chatViewData.add(msg);
-                newMsgPosition = chatViewData.size() - 1;
-                chatViewAdapter.notifyItemInserted(newMsgPosition);
-                recyclerView.scrollToPosition(newMsgPosition);
+//                chatViewData.add(msg);
+//                newMsgPosition = chatViewData.size() - 1;
+//                chatViewAdapter.notifyItemInserted(newMsgPosition);
+//                recyclerView.scrollToPosition(newMsgPosition);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             }
 
             SharedPreferences.Editor editor = preferences.edit();
@@ -624,10 +676,12 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
 
     MainActivity mainActivity;
     private final AIDataService aiService;
+    private final int itemInsertPosition;
 
-    AiTask(MainActivity mainActivity, AIDataService aiService) {
+    AiTask(MainActivity mainActivity, AIDataService aiService, int itemInsertPosition) {
         this.mainActivity = mainActivity;
         this.aiService = aiService;
+        this.itemInsertPosition = itemInsertPosition;
     }
 
     @Override
@@ -733,26 +787,34 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
 
     private void showText(String text) {
         ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, text);
-        mainActivity.chatViewData.add(msg);
-        int newMsgPosition = mainActivity.chatViewData.size() - 1;
-        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+//        mainActivity.chatViewData.add(msg);
+//        int newMsgPosition = mainActivity.chatViewData.size() - 1;
+//        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+//        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+        updateRVAdapter(msg);
     }
 
     private void showImage(String url) {
         ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_IMAGE, url);
-        mainActivity.chatViewData.add(msg);
-        int newMsgPosition = mainActivity.chatViewData.size() - 1;
-        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+//        mainActivity.chatViewData.add(msg);
+//        int newMsgPosition = mainActivity.chatViewData.size() - 1;
+//        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+//        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+        updateRVAdapter(msg);
     }
 
     private void showVideo(String url, int startTime, int stopTime) {
         ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, url);
         msg.setStartSeconds(startTime);
-        mainActivity.chatViewData.add(msg);
-        int newMsgPosition = mainActivity.chatViewData.size() - 1;
-        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+//        mainActivity.chatViewData.add(msg);
+//        int newMsgPosition = mainActivity.chatViewData.size() - 1;
+//        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
+//        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
+        updateRVAdapter(msg);
+    }
+
+    private void updateRVAdapter(ChatViewData msg) {
+        mainActivity.chatViewAdapter.updateItemAtPos(msg, itemInsertPosition);
+        mainActivity.recyclerView.smoothScrollToPosition(itemInsertPosition);
     }
 }

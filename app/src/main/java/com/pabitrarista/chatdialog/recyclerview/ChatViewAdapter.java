@@ -13,6 +13,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
@@ -22,10 +23,21 @@ import static android.view.View.VISIBLE;
 
 public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
-    private List<ChatViewData> chatViewData;
+    private List<ChatViewData> chatViewDataList;
 
-    public ChatViewAdapter(List<ChatViewData> chatViewData) {
-        this.chatViewData = chatViewData;
+    public ChatViewAdapter(List<ChatViewData> chatViewDataList) {
+        this.chatViewDataList = new ArrayList<>(chatViewDataList);
+    }
+
+    public int addChatData(final ChatViewData viewData) {
+        chatViewDataList.add(viewData);
+        notifyItemInserted(chatViewDataList.size());
+        return chatViewDataList.size() - 1;
+    }
+
+    public void updateItemAtPos(final ChatViewData viewData, int position) {
+        chatViewDataList.set(position, viewData);
+        notifyItemChanged(position);
     }
 
     @NonNull
@@ -39,11 +51,21 @@ public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
 
-        ChatViewData chatViewData1 = chatViewData.get(position);
+        ChatViewData chatViewData1 = chatViewDataList.get(position);
+
+        // If the message is still pending show placeholder
+        if (chatViewData1.MSG_TYPE_PACEHOLDER.equalsIgnoreCase(chatViewData1.getMsgType())) {
+            holder.gifImageViewLoading.setVisibility(VISIBLE);
+            holder.leftMsgTextView.setVisibility(GONE);
+            holder.rightMsgTextView.setVisibility(GONE);
+            holder.leftImageView.setVisibility(GONE);
+            holder.relativeLayout.setVisibility(GONE);
+        }
 
         // If the message is a received message.
         if (chatViewData1.MSG_TYPE_RECEIVED.equals(chatViewData1.getMsgType())) {
             holder.leftMsgTextView.setText(chatViewData1.getMsgContent());
+            holder.gifImageViewLoading.setVisibility(GONE);
             holder.leftMsgTextView.setVisibility(VISIBLE);
             holder.rightMsgTextView.setVisibility(GONE);
             holder.leftImageView.setVisibility(GONE);
@@ -52,6 +74,7 @@ public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         // If the message is a sent message.
         else if (chatViewData1.MSG_TYPE_SENT.equals(chatViewData1.getMsgType())) {
             holder.rightMsgTextView.setText(chatViewData1.getMsgContent());
+            holder.gifImageViewLoading.setVisibility(GONE);
             holder.rightMsgTextView.setVisibility(VISIBLE);
             holder.leftMsgTextView.setVisibility(GONE);
             holder.leftImageView.setVisibility(GONE);
@@ -61,6 +84,7 @@ public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         else if (chatViewData1.MSG_TYPE_IMAGE.equals(chatViewData1.getMsgType())) {
             //Load Image using Picasso library
             Picasso.get().load(chatViewData1.getMsgContent()).into(holder.leftImageView);
+            holder.gifImageViewLoading.setVisibility(GONE);
             holder.leftImageView.setVisibility(VISIBLE);
             holder.rightMsgTextView.setVisibility(GONE);
             holder.leftMsgTextView.setVisibility(GONE);
@@ -105,6 +129,7 @@ public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
                 }
             });
 
+            holder.gifImageViewLoading.setVisibility(GONE);
             holder.relativeLayout.setVisibility(VISIBLE);
             holder.rightMsgTextView.setVisibility(GONE);
             holder.leftMsgTextView.setVisibility(GONE);
@@ -114,6 +139,6 @@ public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
     @Override
     public int getItemCount() {
-        return chatViewData.size();
+        return chatViewDataList.size();
     }
 }

@@ -5,6 +5,7 @@ public class ChatViewData {
     public final static String MSG_TYPE_RECEIVED = "MSG_TYPE_RECEIVED";
     public final static String MSG_TYPE_IMAGE = "MSG_TYPE_IMAGE";
     public final static String MSG_TYPE_VIDEO = "MSG_TYPE_VIDEO";
+    public final static String MSG_TYPE_PACEHOLDER = "MSG_TYPE_PLACEHOLDER";
 
     // Message type.
     private String msgType;

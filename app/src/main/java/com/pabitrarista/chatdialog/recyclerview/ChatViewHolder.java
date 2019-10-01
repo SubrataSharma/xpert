@@ -21,10 +21,12 @@ class ChatViewHolder extends RecyclerView.ViewHolder {
 
     RelativeLayout relativeLayout, playRelativeLayout, pauseRelativeLayout;
     YouTubePlayerView youTubePlayerView;
-    GifImageView gifImageView;
+    GifImageView gifImageView, gifImageViewLoading;
 
     ChatViewHolder(View itemView) {
         super(itemView);
+
+        gifImageViewLoading = itemView.findViewById(R.id.view_chat_item_loading);
 
         leftMsgTextView = itemView.findViewById(R.id.view_chat_item_left);
         rightMsgTextView = itemView.findViewById(R.id.view_chat_item_right);
