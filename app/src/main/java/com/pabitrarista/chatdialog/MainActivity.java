@@ -258,7 +258,18 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 editor.apply();
                 createSessionId(prof);
 
-                //TODO: 1
+                String s1 = "Hi " + userName;
+                String s2 = "Nice to meet a fellow " + prof;
+                String s3 = "Feel free to ask me about my journey, " + inters + " or anything else.";
+
+                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+
+                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s2);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+
+                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s3);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             }
         });
         textViewIntro2.setOnClickListener(new View.OnClickListener() {
@@ -273,7 +284,17 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 editor.apply();
                 createSessionId(inters);
 
-                // TODO: 2
+                String s1 = "Hi " + userName;
+                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+
+                s1 = "Great to see you are interested in " + inters + ".";
+                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+
+                s1 = "Feel free to ask me about " + inters + ", my opinions or anything else.";
+                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             }
         });
         textViewIntro3.setOnClickListener(new View.OnClickListener() {
@@ -288,7 +309,21 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 editor.apply();
                 createSessionId("fan");
 
-                //TODO: 3
+                String s1 = "Hi " + userName;
+                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+
+                String s2 = "Glad to finally meet you !";
+                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s2);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+
+                String s3 = "Thank you for your support.";
+                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s3);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+
+                String s4 = "How are you doing today?";
+                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s4);
+                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             }
         });
     }
