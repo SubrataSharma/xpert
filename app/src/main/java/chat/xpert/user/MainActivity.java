@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     String TAG = "logtag";
 
     CardView cardView_4thBucket;
-    ImageView imageView_4thBucket;
+    ImageView imageView_4thBucket, image_four_squares;
     RelativeLayout relativeLayout;
     TextView textView, textView_4thBucket;
     HorizontalScrollView horizontalScrollView;
@@ -160,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         cardView_4thBucket.setVisibility(View.GONE);
         relativeLayout = findViewById(R.id.main_relative_layout);
         imageView_4thBucket = findViewById(R.id.main_4thBucket_imageView);
+        image_four_squares = findViewById(R.id.main_image_four_squares);
         textView = findViewById(R.id.main_text_view);
         textView_4thBucket = findViewById(R.id.main_4thBucket_textView);
         horizontalScrollView = findViewById(R.id.main_horizontal_scroll_view);
@@ -423,10 +426,12 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 if (heightDiff > 500) {
                     textView.setVisibility(View.GONE);
                     horizontalScrollView.setVisibility(View.GONE);
+                    image_four_squares.setVisibility(View.VISIBLE);
                     //Log.i(TAG, "keyboard opened");
                 } else {
                     textView.setVisibility(View.VISIBLE);
                     horizontalScrollView.setVisibility(View.VISIBLE);
+                    image_four_squares.setVisibility(View.GONE);
                     //Log.i(TAG, "keyboard closed");
                 }
             }
@@ -663,6 +668,15 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             editor.putString("response", null);
             editor.putInt("video_start", -1);
             editor.apply();
+        }
+    }
+
+    public void openBucket(View view) {
+        View view2 = this.getCurrentFocus();
+
+        if (view2 != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
         }
     }
 }
