@@ -22,5 +22,5 @@
         android:fontFamily="@font/roboto_light"
         android:text="Questions around My Life"
         android:textColor="#ffffff"
-        android:textSize="25sp" />
+        android:textSize="22sp" />
 </LinearLayout>

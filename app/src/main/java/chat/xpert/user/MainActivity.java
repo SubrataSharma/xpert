@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     String userPhone, userName;
 
     String userInterest = "null";
+    String xpertInterest = "";
 
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
@@ -398,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                                                             inters = document.getString(INTEREST_KEY);
                                                             imageUrl = document.getString(IMAGE_KEY);
                                                             inters = inters.replace('-', ' ');
+                                                            xpertInterest = inters;
                                                             inters = inters.toUpperCase();
                                                             textView_4thBucket.setText(inters);
                                                             Picasso.get().load(imageUrl).into(imageView_4thBucket);
@@ -506,6 +508,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         in.putExtra("option", "personality");
         in.putExtra("xpertId", xpertId);
         in.putExtra("bucket", BUCKET_3_KEY);
+        in.putExtra("title", "Trivia");
         startActivity(in);
     }
 
@@ -514,6 +517,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         in.putExtra("option", "opinion");
         in.putExtra("xpertId", xpertId);
         in.putExtra("bucket", BUCKET_3_KEY);
+        in.putExtra("title", "Opinions");
         startActivity(in);
     }
 
@@ -522,6 +526,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         in.putExtra("option", "journey");
         in.putExtra("xpertId", xpertId);
         in.putExtra("bucket", BUCKET_4_KEY);
+        in.putExtra("title", "Life");
         startActivity(in);
     }
 
@@ -530,6 +535,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         in.putExtra("option", "pro");
         in.putExtra("xpertId", xpertId);
         in.putExtra("bucket", BUCKET_4_KEY);
+        in.putExtra("title", xpertInterest);
         startActivity(in);
     }
 

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,6 +33,7 @@ public class AskScreen2Activity extends AppCompatActivity {
     String option = null;
     String xpertId = null;
     String bucket = null;
+    String title = null;
     private SharedPreferences preferences;
 
     FirebaseFirestore db;
@@ -66,6 +68,7 @@ public class AskScreen2Activity extends AppCompatActivity {
         option = getIntent().getStringExtra("option");
         xpertId = getIntent().getStringExtra("xpertId");
         bucket = getIntent().getStringExtra("bucket");
+        title = getIntent().getStringExtra("title");
 
         this.getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -80,6 +83,8 @@ public class AskScreen2Activity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        TextView titleTextView = view.findViewById(R.id.custom_action_bar2_name);
+        titleTextView.setText("Questions around My " + title);
 
         init();
 
