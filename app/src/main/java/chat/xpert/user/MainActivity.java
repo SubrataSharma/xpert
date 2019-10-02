@@ -38,6 +38,7 @@ import com.pabitrarista.chatdialog.R;
 
 import chat.xpert.user.recyclerview.ChatViewAdapter;
 import chat.xpert.user.recyclerview.ChatViewData;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private SharedPreferences preferences;
 
     String xpertName, xpertImage, xpertId;
+    int xpertIdChatCount;
     String sessionId = null;
     String userPhone, userName;
 
@@ -431,7 +433,14 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     private void createSessionId(String userInterest) {
-        sessionId = xpertId + "|" + userPhone + "|" + userInterest;
+        xpertIdChatCount = preferences.getInt(xpertId + "ChatCount", 0);
+        xpertIdChatCount++;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(xpertId + "ChatCount", xpertIdChatCount);
+        editor.apply();
+
+        sessionId = xpertId + "|" + userPhone + "|" + userInterest + "|" + xpertIdChatCount;
+        Log.i("sessionId", sessionId);
 
         /*db.collection(XPERT_MASTER_KEY)
                 .document(xpertId)
