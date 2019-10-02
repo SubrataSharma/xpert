@@ -1,14 +1,13 @@
-package com.pabitrarista.chatdialog.recyclerview;
+package chat.xpert.user.recyclerview;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pabitrarista.chatdialog.AskScreen2Activity;
+import chat.xpert.user.AskScreen2Activity;
 import com.pabitrarista.chatdialog.R;
 
 import java.util.ArrayList;

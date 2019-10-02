@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AskScreen2Activity">
+    tools:context="chat.xpert.user.AskScreen2Activity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ask_screen2_recycler_view"

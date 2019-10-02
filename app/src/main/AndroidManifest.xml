@@ -13,18 +13,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".AskScreen2Activity" />
+        <activity android:name="chat.xpert.user.AskScreen2Activity" />
 
-        <activity android:name=".MainActivity" />
+        <activity android:name="chat.xpert.user.MainActivity" />
 
-        <activity android:name=".XpertListActivity" />
+        <activity android:name="chat.xpert.user.XpertListActivity" />
 
         <activity
-            android:name=".OtpActivity"
+            android:name="chat.xpert.user.OtpActivity"
             android:theme="@style/AppTheme2" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name="chat.xpert.user.LoginActivity"
             android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

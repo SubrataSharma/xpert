@@ -1,4 +1,4 @@
-package com.pabitrarista.chatdialog;
+package chat.xpert.user;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -16,7 +16,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.pabitrarista.chatdialog.recyclerview.XpertViewAdapter;
+import com.pabitrarista.chatdialog.R;
+
+import chat.xpert.user.recyclerview.XpertViewAdapter;
 
 import java.util.ArrayList;
 

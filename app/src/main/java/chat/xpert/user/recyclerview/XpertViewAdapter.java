@@ -1,4 +1,4 @@
-package com.pabitrarista.chatdialog.recyclerview;
+package chat.xpert.user.recyclerview;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pabitrarista.chatdialog.R;
-import com.pabitrarista.chatdialog.XpertListActivity;
+import chat.xpert.user.XpertListActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

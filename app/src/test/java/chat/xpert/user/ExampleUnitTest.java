@@ -1,4 +1,4 @@
-package com.pabitrarista.chatdialog;
+package chat.xpert.user;
 
 import org.junit.Test;
 

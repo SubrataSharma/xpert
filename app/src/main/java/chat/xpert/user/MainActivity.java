@@ -1,4 +1,4 @@
-package com.pabitrarista.chatdialog;
+package chat.xpert.user;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -28,22 +28,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.mannan.translateapi.Language;
 import com.mannan.translateapi.TranslateAPI;
-import com.pabitrarista.chatdialog.recyclerview.ChatViewAdapter;
-import com.pabitrarista.chatdialog.recyclerview.ChatViewData;
+import com.pabitrarista.chatdialog.R;
+
+import chat.xpert.user.recyclerview.ChatViewAdapter;
+import chat.xpert.user.recyclerview.ChatViewData;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ai.api.AIListener;
 import ai.api.AIServiceException;

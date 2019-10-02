@@ -1,4 +1,4 @@
-package com.pabitrarista.chatdialog.recyclerview;
+package chat.xpert.user.recyclerview;
 
 public class ChatViewData {
     public final static String MSG_TYPE_SENT = "MSG_TYPE_SENT";

@@ -1,4 +1,4 @@
-package com.pabitrarista.chatdialog.recyclerview;
+package chat.xpert.user.recyclerview;
 
 import android.view.LayoutInflater;
 import android.view.View;

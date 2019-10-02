@@ -1,4 +1,4 @@
-package com.pabitrarista.chatdialog;
+package chat.xpert.user;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.pabitrarista.chatdialog.R;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
