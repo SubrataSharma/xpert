@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -564,6 +565,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     public void callDialogFlow(String msg) {
         int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
+        recyclerView.smoothScrollToPosition(itemInsertPosition);
         new AiTask(MainActivity.this, aiDataService, itemInsertPosition).execute(msg, "", "", sessionId);
 //        aiService.startListening();
     }
@@ -614,20 +616,45 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
 
             if (response_type.equals("youtube")) {
-                msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
+                final int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
+                recyclerView.smoothScrollToPosition(itemInsertPosition);
+                final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
                 msg.setStartSeconds(video_start);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        chatViewAdapter.updateItemAtPos(msgTemp, itemInsertPosition);
+                        recyclerView.smoothScrollToPosition(itemInsertPosition);
+                    }
+                }, 3000);
+
+//                msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
+//                msg.setStartSeconds(video_start);
 //                chatViewData.add(msg);
 //                newMsgPosition = chatViewData.size() - 1;
 //                chatViewAdapter.notifyItemInserted(newMsgPosition);
 //                recyclerView.scrollToPosition(newMsgPosition);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+//                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             } else if (response_type.equals("text")) {
-                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, response);
+                final int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
+                recyclerView.smoothScrollToPosition(itemInsertPosition);
+                final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, response);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        chatViewAdapter.updateItemAtPos(msgTemp, itemInsertPosition);
+                        recyclerView.smoothScrollToPosition(itemInsertPosition);
+                    }
+                }, 3000);
+
+//                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, response);
 //                chatViewData.add(msg);
 //                newMsgPosition = chatViewData.size() - 1;
 //                chatViewAdapter.notifyItemInserted(newMsgPosition);
 //                recyclerView.scrollToPosition(newMsgPosition);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+//                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             }
 
             SharedPreferences.Editor editor = preferences.edit();
