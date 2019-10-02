@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             public void onGlobalLayout() {
                 int heightDiff = relativeLayout.getRootView().getHeight() - relativeLayout.getHeight();
                 //Log.i(TAG, "onGlobalLayout: " + relativeLayout.getRootView().getHeight() + " " + relativeLayout.getHeight() + " " + heightDiff);
-                if (heightDiff > 400) {
+                if (heightDiff > 500) {
                     textView.setVisibility(View.GONE);
                     horizontalScrollView.setVisibility(View.GONE);
                     //Log.i(TAG, "keyboard opened");
@@ -619,7 +619,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 final int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
                 recyclerView.smoothScrollToPosition(itemInsertPosition);
                 final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
-                msg.setStartSeconds(video_start);
+                msgTemp.setStartSeconds(video_start);
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
