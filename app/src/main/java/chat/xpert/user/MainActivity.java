@@ -508,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         in.putExtra("option", "personality");
         in.putExtra("xpertId", xpertId);
         in.putExtra("bucket", BUCKET_3_KEY);
-        in.putExtra("title", "Trivia");
+        in.putExtra("title", "My Trivia");
         startActivity(in);
     }
 
@@ -517,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         in.putExtra("option", "opinion");
         in.putExtra("xpertId", xpertId);
         in.putExtra("bucket", BUCKET_3_KEY);
-        in.putExtra("title", "Opinions");
+        in.putExtra("title", "My Opinions");
         startActivity(in);
     }
 
@@ -526,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         in.putExtra("option", "journey");
         in.putExtra("xpertId", xpertId);
         in.putExtra("bucket", BUCKET_4_KEY);
-        in.putExtra("title", "Life");
+        in.putExtra("title", "My Life");
         startActivity(in);
     }
 

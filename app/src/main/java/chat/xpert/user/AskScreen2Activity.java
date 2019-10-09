@@ -84,7 +84,7 @@ public class AskScreen2Activity extends AppCompatActivity {
             }
         });
         TextView titleTextView = view.findViewById(R.id.custom_action_bar2_name);
-        titleTextView.setText("Questions around My " + title);
+        titleTextView.setText(title);
 
         init();
 
