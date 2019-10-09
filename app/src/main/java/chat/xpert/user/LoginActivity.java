@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.pabitrarista.chatdialog.R;
 
 import java.util.regex.Matcher;
@@ -31,7 +33,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     AppCompatTextView termsTextView;
     Button loginButton;
 
-    String name, phone;
+    String name, phone, userIdPhone;
 
     private SharedPreferences preferences;
 
@@ -40,26 +42,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        name = preferences.getString("userName", "null");
-        phone = preferences.getString("userPhone", "null");
-        if (!name.equals("null") && !phone.equals("null")) {
-            Intent in = new Intent(LoginActivity.this, XpertListActivity.class);
-            startActivity(in);
-            finish();
-        }
-
         init();
+
+        validUser();
 
         setTermsPolicyText(termsTextView);
     }
 
     private void init() {
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         nameEditText = findViewById(R.id.login_user_name);
         phoneEditText = findViewById(R.id.login_user_phone);
         termsTextView = findViewById(R.id.login_terms);
         loginButton = findViewById(R.id.login_btn);
         loginButton.setOnClickListener(this);
+    }
+
+    public void validUser() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        try {
+            userIdPhone = mUser.getPhoneNumber();
+
+            if (userIdPhone != null) {
+                Intent in = new Intent(LoginActivity.this, XpertListActivity.class);
+                startActivity(in);
+                finish();
+            }
+        } catch (NullPointerException e) {
+            Toast.makeText(getApplicationContext(), "Please Verify Phone no", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setTermsPolicyText(AppCompatTextView textView) {
@@ -119,15 +131,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (!validateName() || !validatePhone())
                     return;
 
-                name = nameEditText.getText().toString();
-                phone = phoneEditText.getText().toString();
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("userName", name);
                 editor.putString("userPhone", phone);
                 editor.apply();
-                Intent in = new Intent(LoginActivity.this, XpertListActivity.class);
+                Intent in = new Intent(LoginActivity.this, OtpActivity.class);
+                phone = "+91" + phone;
+                in.putExtra("phone", phone);
                 startActivity(in);
-                finish();
+                //finish();
         }
     }
 
