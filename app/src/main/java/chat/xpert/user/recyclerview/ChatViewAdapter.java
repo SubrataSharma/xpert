@@ -62,6 +62,15 @@ public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
             holder.relativeLayout.setVisibility(GONE);
         }
 
+        // If the message type is blank, show nothing
+        if (chatViewData1.getMsgType().equalsIgnoreCase("")) {
+            holder.gifImageViewLoading.setVisibility(GONE);
+            holder.leftMsgTextView.setVisibility(GONE);
+            holder.rightMsgTextView.setVisibility(GONE);
+            holder.leftImageView.setVisibility(GONE);
+            holder.relativeLayout.setVisibility(GONE);
+        }
+
         // If the message is a received message.
         if (chatViewData1.MSG_TYPE_RECEIVED.equals(chatViewData1.getMsgType())) {
             holder.leftMsgTextView.setText(chatViewData1.getMsgContent());

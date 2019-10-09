@@ -691,7 +691,7 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
 
     MainActivity mainActivity;
     private final AIDataService aiService;
-    private final int itemInsertPosition;
+    private int itemInsertPosition;
 
     AiTask(MainActivity mainActivity, AIDataService aiService, int itemInsertPosition) {
         this.mainActivity = mainActivity;
@@ -831,5 +831,6 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
     private void updateRVAdapter(ChatViewData msg) {
         mainActivity.chatViewAdapter.updateItemAtPos(msg, itemInsertPosition);
         mainActivity.recyclerView.smoothScrollToPosition(itemInsertPosition);
+        itemInsertPosition = mainActivity.chatViewAdapter.addChatData(new ChatViewData("", ""));
     }
 }
