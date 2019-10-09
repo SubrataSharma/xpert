@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,9 +28,12 @@ import java.util.concurrent.TimeUnit;
 
 public class OtpActivity extends AppCompatActivity {
 
-    private ProgressBar progressBar;
+    ProgressBar progressBar;
     EditText editText;
-    Button button;
+    Button button, btResend;
+    TextView tvCountDownTimer;
+
+    private CountDownTimer countDownTimer;
 
     private String verificationId;
     private FirebaseAuth mAuth;
@@ -57,13 +62,23 @@ public class OtpActivity extends AppCompatActivity {
                 }
                 try {
                     button.setEnabled(false);
+                    btResend.setEnabled(false);
                     progressBar.setVisibility(View.VISIBLE);
                     verifyCode(code);
                 } catch (Exception e) {
                     button.setEnabled(true);
+                    btResend.setEnabled(true);
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btResend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendVerificationOtp(phone);
+                btResend.setEnabled(false);
             }
         });
     }
@@ -72,16 +87,39 @@ public class OtpActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.o_progressBar);
         editText = findViewById(R.id.o_otp);
         button = findViewById(R.id.o_verify);
+        btResend = findViewById(R.id.o_resend);
+        tvCountDownTimer = findViewById(R.id.o_resend_time);
         mAuth = FirebaseAuth.getInstance();
+    }
+
+    private void startCounter() {
+        if (countDownTimer != null)
+            countDownTimer.cancel();
+
+        countDownTimer = new CountDownTimer(30000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                tvCountDownTimer.setText(millisUntilFinished / 1000 + "");
+            }
+
+            public void onFinish() {
+                tvCountDownTimer.setText("");
+                btResend.setEnabled(true);
+            }
+
+        };
+
+        countDownTimer.start();
     }
 
     private void sendVerificationOtp(String phoneNumber) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
-                60,                 // Timeout duration
+                30,                 // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
                 this,               // Activity (for callback binding)
                 mCallbacks);        // OnVerificationStateChangedCallbacksPhoneAuthActivity.java
+
+        startCounter();
     }
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks
@@ -92,6 +130,7 @@ public class OtpActivity extends AppCompatActivity {
             String code = phoneAuthCredential.getSmsCode();
             if (code != null) {
                 button.setEnabled(false);
+                btResend.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
                 verifyCode(code);
             }
@@ -133,6 +172,7 @@ public class OtpActivity extends AppCompatActivity {
                             startActivity(in2);
                         } else {
                             button.setEnabled(true);
+                            btResend.setEnabled(true);
                             progressBar.setVisibility(View.GONE);
                             Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -142,6 +182,7 @@ public class OtpActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         button.setEnabled(true);
+                        btResend.setEnabled(true);
                         progressBar.setVisibility(View.GONE);
                     }
                 });
