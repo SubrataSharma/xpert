@@ -30,7 +30,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -46,7 +48,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ai.api.AIListener;
 import ai.api.AIServiceException;
@@ -85,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
     private SharedPreferences preferences;
 
-    String xpertName, xpertImage, xpertId;
+    String xpertName, xpertImage, xpertId, Uid;
     int xpertIdChatCount;
     String sessionId = null;
     String userPhone, userName;
@@ -93,8 +97,11 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     String userInterest = "null";
     String xpertInterest = "";
 
+    FirebaseAuth mAuth;
+
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
+    private static final String USER_MASTER_KEY = "user_master";
     private static final String NAME_KEY = "name";
     private static final String PROFESSION_KEY = "profession";
     private static final String BUCKET_3_KEY = "bucket3";
@@ -112,6 +119,12 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private static final String PROFESION_KEY = "profession";
     private static final String INTEREST_KEY = "interest";
     private static final String IMAGE_KEY = "image";
+    private static final String XPERT_KEY = "xpert";
+    private static final String XPERT_PROFILE_IMAGE_KEY = "xpert_profile_image";
+    private static final String ACTIVE_KEY = "active";
+    private static final String DATE_KEY = "date";
+    private static final String START_CHAT_ON_KEY = "start_chat_on";
+    private static final String NOTIFICATION_KEY = "notification";
     Query content4thBucket, profession;
 
     @Override
@@ -126,6 +139,9 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         xpertName = getIntent().getStringExtra("xpertName");
         xpertImage = getIntent().getStringExtra("xpertImage");
         xpertId = getIntent().getStringExtra("xpertId");
+
+        mAuth = FirebaseAuth.getInstance();
+        Uid = mAuth.getUid();
 
         this.getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -265,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 editor.putString("userInterestAbout" + xpertId, prof);
                 editor.apply();
                 createSessionId(prof);
+                uploadUserInterest(prof);
 
                 String s1 = "Hi " + userName;
                 String s2 = "Nice to meet a fellow " + prof;
@@ -291,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 editor.putString("userInterestAbout" + xpertId, inters);
                 editor.apply();
                 createSessionId(inters);
+                uploadUserInterest(inters);
 
                 String s1 = "Hi " + userName;
                 ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
@@ -316,6 +334,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 editor.putString("userInterestAbout" + xpertId, "fan");
                 editor.apply();
                 createSessionId("fan");
+                uploadUserInterest("fan");
 
                 String s1 = "Hi " + userName;
                 ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
@@ -330,6 +349,30 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             }
         });
+    }
+
+    private void uploadUserInterest(final String userInterest) {
+
+        Map<String, Object> docData = new HashMap<>();
+        docData.put(XPERT_KEY, db.document(XPERT_MASTER_KEY + "/" + xpertId));
+        docData.put(XPERT_PROFILE_IMAGE_KEY, null);
+        docData.put(USER_PERSONA_KEY, userInterest);
+        docData.put(ACTIVE_KEY, true);
+        docData.put(DATE_KEY, FieldValue.serverTimestamp());
+        docData.put(START_CHAT_ON_KEY, FieldValue.serverTimestamp());
+        docData.put(SESSION_ID_KEY, sessionId);
+        docData.put(NOTIFICATION_KEY, true);
+
+        db.collection(USER_MASTER_KEY)
+                .document(Uid)
+                .collection("following")
+                .document(xpertId)
+                .set(docData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                });
     }
 
     private void set4thBucket() {
