@@ -46,6 +46,8 @@ import chat.xpert.user.recyclerview.ChatViewData;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private static final String LAST_NAME_KEY = "last_name";
     private static final String PROFILE_PIC_KEY = "profile_pic";
     private static final String GENDER_KEY = "gender";
+    private static final String SENDER_KEY = "sender";
     private static final String SENDER_ID_KEY = "sender_id";
     private static final String SESSION_ID_KEY = "session_id";
     private static final String LAST_CHAT_ON_KEY = "last_chat_on";
@@ -125,6 +128,12 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private static final String DATE_KEY = "date";
     private static final String START_CHAT_ON_KEY = "start_chat_on";
     private static final String NOTIFICATION_KEY = "notification";
+    private static final String MESSAGE_TYPE_KEY = "message_type";
+    private static final String MESSAGE_KEY = "message";
+    private static final String TIMESTAMP_KEY = "timestamp";
+    private static final String LANGUAGE_KEY = "language";
+    private static final String STATUS_KEY = "status";
+    private static final String RESPONSE_DOC_ID_KEY = "response_doc_id";
     Query content4thBucket, profession;
 
     @Override
@@ -656,7 +665,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         super.onResume();
 
         String question_content = preferences.getString("question_content", null);
-        String response = preferences.getString("response", null);
+        final String response = preferences.getString("response", null);
         String response_type = preferences.getString("response_type", null);
         int video_start = preferences.getInt("video_start", -1);
 
@@ -668,6 +677,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 //            chatViewAdapter.notifyItemInserted(newMsgPosition);
 //            recyclerView.scrollToPosition(newMsgPosition);
             recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+            writeMsgInDB("user", "text", question_content);
 
             if (response_type.equals("youtube")) {
                 final int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
@@ -680,6 +690,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                     public void run() {
                         chatViewAdapter.updateItemAtPos(msgTemp, itemInsertPosition);
                         recyclerView.smoothScrollToPosition(itemInsertPosition);
+                        writeMsgInDB("xpert", "youtube", response);
                     }
                 }, 3000);
 
@@ -700,6 +711,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                     public void run() {
                         chatViewAdapter.updateItemAtPos(msgTemp, itemInsertPosition);
                         recyclerView.smoothScrollToPosition(itemInsertPosition);
+                        writeMsgInDB("xpert", "text", response);
                     }
                 }, 3000);
 
@@ -718,6 +730,36 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             editor.putInt("video_start", -1);
             editor.apply();
         }
+    }
+
+    public void writeMsgInDB(String sender, String message_type, String message) {
+
+        Date date = new Date();
+        long time = date.getTime(); //Time in Milliseconds
+        Timestamp ts = new Timestamp(time);
+        Log.i("timestamp", ts.toString());
+
+        Map<String, Object> docData = new HashMap<>();
+        docData.put(SENDER_KEY, sender);                // user|xpert
+        docData.put(MESSAGE_TYPE_KEY, message_type);    //text|image|youtube
+        docData.put(MESSAGE_KEY, message);
+        docData.put(TIMESTAMP_KEY, ts);
+        docData.put(LANGUAGE_KEY, "english");
+        docData.put(STATUS_KEY, "send");
+        docData.put(RESPONSE_DOC_ID_KEY, null);
+
+        db.collection(USER_MASTER_KEY)
+                .document(Uid)
+                .collection("following")
+                .document(xpertId)
+                .collection("chat_transcript")
+                .document()
+                .set(docData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                });
     }
 
     public void openBucket(View view) {
