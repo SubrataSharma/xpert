@@ -1,6 +1,7 @@
 package chat.xpert.user;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -31,9 +32,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     RecyclerView recyclerView;
     final List<ChatViewData> chatViewData = new ArrayList<>();
     ChatViewAdapter chatViewAdapter;
+    int itemInsertPosition = 0;
 
     AIService aiService;
     AIDataService aiDataService;
@@ -183,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         set4thBucket();
 
         hideBucket();
+
+        firestoreListener();
     }
 
     private void init() {
@@ -295,17 +302,11 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 uploadUserInterest(prof);
 
                 String s1 = "Hi " + userName;
+                writeMsgInDB("xpert", "text", s1, 0, 0);
                 String s2 = "Nice to meet a fellow " + prof;
+                writeMsgInDB("xpert", "text", s2, 0, 0);
                 String s3 = "Feel free to ask me about my journey, " + inters + " or anything else.";
-
-                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
-
-                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s2);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
-
-                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s3);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+                writeMsgInDB("xpert", "text", s3, 0, 0);
             }
         });
         textViewIntro2.setOnClickListener(new View.OnClickListener() {
@@ -322,16 +323,11 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 uploadUserInterest(inters);
 
                 String s1 = "Hi " + userName;
-                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
-
+                writeMsgInDB("xpert", "text", s1, 0, 0);
                 s1 = "Great to see you are interested in " + inters + ".";
-                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
-
+                writeMsgInDB("xpert", "text", s1, 0, 0);
                 s1 = "Feel free to ask me about " + inters + ", my opinions or anything else.";
-                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+                writeMsgInDB("xpert", "text", s1, 0, 0);
             }
         });
         textViewIntro3.setOnClickListener(new View.OnClickListener() {
@@ -348,16 +344,11 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 uploadUserInterest("fan");
 
                 String s1 = "Hi " + userName;
-                ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s1);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
-
+                writeMsgInDB("xpert", "text", s1, 0, 0);
                 String s2 = "Glad to finally meet you !";
-                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s2);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
-
+                writeMsgInDB("xpert", "text", s2, 0, 0);
                 String s3 = "Thank you for your support,\nHow are you doing today?";
-                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, s3);
-                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+                writeMsgInDB("xpert", "text", s3, 0, 0);
             }
         });
     }
@@ -614,25 +605,14 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 }
             });
 
-            // Add a new sent message to the list.
-            ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_SENT, msgEditText);
-            recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
-//            chatViewData.add(msg);
-//            int newMsgPosition = chatViewData.size() - 1;
-            // Notify recycler view insert one new data.
-//            chatViewAdapter.notifyItemInserted(newMsgPosition);
-            // Scroll RecyclerView to the last message.
-//            recyclerView.scrollToPosition(newMsgPosition);
+            writeMsgInDB("user", "text", msgEditText, 0, 0);
 
             editText.setText("");
         }
     }
 
-    public void callDialogFlow(String msg) {
-        int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
-        recyclerView.smoothScrollToPosition(itemInsertPosition);
-        new AiTask(MainActivity.this, aiDataService, itemInsertPosition).execute(msg, "", "", sessionId);
-        writeMsgInDB("user", "text", msg, 0, 0);
+    private void callDialogFlow(String msg) {
+        new AiTask(MainActivity.this, aiDataService).execute(msg, "", "", sessionId);
 //        aiService.startListening();
     }
 
@@ -674,58 +654,22 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         final int video_end = preferences.getInt("video_end", -1);
 
         if (response_type != null && response != null && !response.equals("")) {
-
-            ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_SENT, question_content);
-//            chatViewData.add(msg);
-//            int newMsgPosition = chatViewData.size() - 1;
-//            chatViewAdapter.notifyItemInserted(newMsgPosition);
-//            recyclerView.scrollToPosition(newMsgPosition);
-            recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             writeMsgInDB("user", "text", question_content, 0, 0);
 
             if (response_type.equals("youtube")) {
-                final int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
-                recyclerView.smoothScrollToPosition(itemInsertPosition);
-                final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
-                msgTemp.setStartSeconds(video_start);
-                msgTemp.setEndSeconds(video_end);
-
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        chatViewAdapter.updateItemAtPos(msgTemp, itemInsertPosition);
-                        recyclerView.smoothScrollToPosition(itemInsertPosition);
                         writeMsgInDB("xpert", "youtube", response, video_start, video_end);
                     }
                 }, 3000);
-
-//                msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
-//                msg.setStartSeconds(video_start);
-//                chatViewData.add(msg);
-//                newMsgPosition = chatViewData.size() - 1;
-//                chatViewAdapter.notifyItemInserted(newMsgPosition);
-//                recyclerView.scrollToPosition(newMsgPosition);
-//                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             } else if (response_type.equals("text")) {
-                final int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
-                recyclerView.smoothScrollToPosition(itemInsertPosition);
-                final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, response);
-
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        chatViewAdapter.updateItemAtPos(msgTemp, itemInsertPosition);
-                        recyclerView.smoothScrollToPosition(itemInsertPosition);
                         writeMsgInDB("xpert", "text", response, 0, 0);
                     }
                 }, 3000);
-
-//                msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, response);
-//                chatViewData.add(msg);
-//                newMsgPosition = chatViewData.size() - 1;
-//                chatViewAdapter.notifyItemInserted(newMsgPosition);
-//                recyclerView.scrollToPosition(newMsgPosition);
-//                recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
             }
 
             SharedPreferences.Editor editor = preferences.edit();
@@ -770,6 +714,84 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 });
     }
 
+    private void firestoreListener() {
+
+        Query query = db.collection(USER_MASTER_KEY)
+                .document(Uid)
+                .collection("following")
+                .document(xpertId)
+                .collection("chat_transcript")
+                .orderBy(TIMESTAMP_KEY);
+
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+//                for (QueryDocumentSnapshot doc : value) {
+//                    if (doc.get("message") != null) {
+//                        Log.i("message", doc.getString("message"));
+//                    }
+//                }
+
+                for (DocumentChange doc : value.getDocumentChanges()) {
+                    if (doc.getType() == DocumentChange.Type.ADDED) {
+                        if (doc.getDocument().get(SENDER_KEY).toString().equals("user")) {
+                            Log.i("message", doc.getDocument().getString(MESSAGE_KEY));
+                            showUserText(doc.getDocument().getString("message"));
+                        }
+                        if (doc.getDocument().get(SENDER_KEY).toString().equals("xpert")) {
+                            Log.i("message", doc.getDocument().getString(MESSAGE_KEY));
+                            if (doc.getDocument().getString(MESSAGE_TYPE_KEY).equals("text"))
+                                showText(doc.getDocument().getString(MESSAGE_KEY));
+                            else if (doc.getDocument().getString(MESSAGE_TYPE_KEY).equals("image"))
+                                showImage(doc.getDocument().getString(MESSAGE_KEY));
+                            else if (doc.getDocument().getString(MESSAGE_TYPE_KEY).equals("youtube"))
+                                showVideo(doc.getDocument().getString(MESSAGE_KEY), doc.getDocument().getLong(ANS_START_KEY).intValue(), doc.getDocument().getLong(ANS_END_KEY).intValue());
+                        }
+                    }
+                }
+
+            }
+        });
+    }
+
+    private void showUserText(String text) {
+        ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_SENT, text);
+        recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
+        itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
+        recyclerView.smoothScrollToPosition(itemInsertPosition);
+    }
+
+    private void showText(String text) {
+        final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, text);
+        updateRVAdapter(msgTemp);
+    }
+
+    private void showImage(String url) {
+        final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_IMAGE, url);
+        updateRVAdapter(msgTemp);
+    }
+
+    private void showVideo(String url, int startTime, int stopTime) {
+        final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, url);
+        msgTemp.setStartSeconds(startTime);
+        msgTemp.setEndSeconds(stopTime);
+        updateRVAdapter(msgTemp);
+    }
+
+    private void updateRVAdapter(ChatViewData msg) {
+        if (itemInsertPosition == 0)
+            itemInsertPosition = chatViewAdapter.addChatData(new ChatViewData("", ""));
+        chatViewAdapter.updateItemAtPos(msg, itemInsertPosition);
+        recyclerView.smoothScrollToPosition(itemInsertPosition);
+        itemInsertPosition = chatViewAdapter.addChatData(new ChatViewData("", ""));
+    }
+
     public void openBucket(View view) {
         View view2 = this.getCurrentFocus();
 
@@ -778,18 +800,50 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
         }
     }
+
+    private void loadChatContent() {
+        Query query = db.collection(USER_MASTER_KEY)
+                .document(Uid)
+                .collection("following")
+                .document(xpertId)
+                .collection("chat_transcript")
+                .orderBy(TIMESTAMP_KEY);
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (document.get(SENDER_KEY).toString().equals("user")) {
+                            Log.i("message", document.getString(MESSAGE_KEY));
+                            showUserText(document.getString("message"));
+                        }
+                        if (document.get(SENDER_KEY).equals("xpert")) {
+                            Log.i("message", document.getString(MESSAGE_KEY));
+                            if (document.getString(MESSAGE_TYPE_KEY).equals("text"))
+                                showText(document.getString(MESSAGE_KEY));
+                            else if (document.getString(MESSAGE_TYPE_KEY).equals("image"))
+                                showImage(document.getString(MESSAGE_KEY));
+                            else if (document.getString(MESSAGE_TYPE_KEY).equals("youtube"))
+                                showVideo(document.getString(MESSAGE_KEY), document.getLong(ANS_START_KEY).intValue(), document.getLong(ANS_END_KEY).intValue());
+                        }
+                    }
+                } else {
+                    Log.d("message", "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
 }
 
 class AiTask extends AsyncTask<String, Void, AIResponse> {
 
     MainActivity mainActivity;
     private final AIDataService aiService;
-    private int itemInsertPosition;
 
-    AiTask(MainActivity mainActivity, AIDataService aiService, int itemInsertPosition) {
+    AiTask(MainActivity mainActivity, AIDataService aiService) {
         this.mainActivity = mainActivity;
         this.aiService = aiService;
-        this.itemInsertPosition = itemInsertPosition;
     }
 
     @Override
@@ -867,10 +921,10 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
 
                 try {
                     if (type.equals("text")) {
-                        showText(s);
+                        mainActivity.writeMsgInDB("xpert", "text", s, 0, 0);
                         type = null;
                     } else if (type.equals("image")) {
-                        showImage(s);
+                        mainActivity.writeMsgInDB("xpert", "image", s, 0, 0);
                         type = null;
                     } else if (type.equals("youtube")) {
                         if (count == 0) {
@@ -882,51 +936,14 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
                         } else if (count == 2) {
                             stopTime = Integer.parseInt(s);
                             count = 0;
-                            showVideo(url, startTime, stopTime);
+                            mainActivity.writeMsgInDB("xpert", "youtube", url, startTime, stopTime);
                             type = null;
                         }
                     }
                 } catch (Exception e) {
-                    showText(s);
+                    mainActivity.writeMsgInDB("xpert", "text", s, 0, 0);
                 }
             }
         }
-    }
-
-    private void showText(String text) {
-        ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, text);
-//        mainActivity.chatViewData.add(msg);
-//        int newMsgPosition = mainActivity.chatViewData.size() - 1;
-//        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-//        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
-        updateRVAdapter(msg);
-        mainActivity.writeMsgInDB("xpert", "text", text, 0, 0);
-    }
-
-    private void showImage(String url) {
-        ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_IMAGE, url);
-//        mainActivity.chatViewData.add(msg);
-//        int newMsgPosition = mainActivity.chatViewData.size() - 1;
-//        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-//        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
-        updateRVAdapter(msg);
-        mainActivity.writeMsgInDB("xpert", "image", url, 0, 0);
-    }
-
-    private void showVideo(String url, int startTime, int stopTime) {
-        ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, url);
-        msg.setStartSeconds(startTime);
-//        mainActivity.chatViewData.add(msg);
-//        int newMsgPosition = mainActivity.chatViewData.size() - 1;
-//        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
-//        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
-        updateRVAdapter(msg);
-        mainActivity.writeMsgInDB("xpert", "youtube", url, startTime, stopTime);
-    }
-
-    private void updateRVAdapter(ChatViewData msg) {
-        mainActivity.chatViewAdapter.updateItemAtPos(msg, itemInsertPosition);
-        mainActivity.recyclerView.smoothScrollToPosition(itemInsertPosition);
-        itemInsertPosition = mainActivity.chatViewAdapter.addChatData(new ChatViewData("", ""));
     }
 }
