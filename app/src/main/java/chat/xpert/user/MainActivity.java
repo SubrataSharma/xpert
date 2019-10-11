@@ -134,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private static final String LANGUAGE_KEY = "language";
     private static final String STATUS_KEY = "status";
     private static final String RESPONSE_DOC_ID_KEY = "response_doc_id";
+    private static final String ANS_START_KEY = "ans_start";
+    private static final String ANS_END_KEY = "ans_end";
     Query content4thBucket, profession;
 
     @Override
@@ -630,7 +632,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
         recyclerView.smoothScrollToPosition(itemInsertPosition);
         new AiTask(MainActivity.this, aiDataService, itemInsertPosition).execute(msg, "", "", sessionId);
-        writeMsgInDB("user", "text", msg);
+        writeMsgInDB("user", "text", msg, 0, 0);
 //        aiService.startListening();
     }
 
@@ -668,7 +670,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         String question_content = preferences.getString("question_content", null);
         final String response = preferences.getString("response", null);
         String response_type = preferences.getString("response_type", null);
-        int video_start = preferences.getInt("video_start", -1);
+        final int video_start = preferences.getInt("video_start", -1);
+        final int video_end = preferences.getInt("video_end", -1);
 
         if (response_type != null && response != null && !response.equals("")) {
 
@@ -678,20 +681,21 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 //            chatViewAdapter.notifyItemInserted(newMsgPosition);
 //            recyclerView.scrollToPosition(newMsgPosition);
             recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
-            writeMsgInDB("user", "text", question_content);
+            writeMsgInDB("user", "text", question_content, 0, 0);
 
             if (response_type.equals("youtube")) {
                 final int itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
                 recyclerView.smoothScrollToPosition(itemInsertPosition);
                 final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_VIDEO, response);
                 msgTemp.setStartSeconds(video_start);
+                msgTemp.setEndSeconds(video_end);
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         chatViewAdapter.updateItemAtPos(msgTemp, itemInsertPosition);
                         recyclerView.smoothScrollToPosition(itemInsertPosition);
-                        writeMsgInDB("xpert", "youtube", response);
+                        writeMsgInDB("xpert", "youtube", response, video_start, video_end);
                     }
                 }, 3000);
 
@@ -712,7 +716,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                     public void run() {
                         chatViewAdapter.updateItemAtPos(msgTemp, itemInsertPosition);
                         recyclerView.smoothScrollToPosition(itemInsertPosition);
-                        writeMsgInDB("xpert", "text", response);
+                        writeMsgInDB("xpert", "text", response, 0, 0);
                     }
                 }, 3000);
 
@@ -729,11 +733,12 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             editor.putString("response_type", null);
             editor.putString("response", null);
             editor.putInt("video_start", -1);
+            editor.putInt("video_end", -1);
             editor.apply();
         }
     }
 
-    public void writeMsgInDB(String sender, String message_type, String message) {
+    public void writeMsgInDB(String sender, String message_type, String message, int ans_start, int ans_end) {
 
         Date date = new Date();
         long time = date.getTime(); //Time in Milliseconds
@@ -748,6 +753,8 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         docData.put(LANGUAGE_KEY, "english");
         docData.put(STATUS_KEY, "send");
         docData.put(RESPONSE_DOC_ID_KEY, null);
+        docData.put(ANS_START_KEY, ans_start);
+        docData.put(ANS_END_KEY, ans_end);
 
         db.collection(USER_MASTER_KEY)
                 .document(Uid)
@@ -893,7 +900,7 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
 //        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
 //        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
         updateRVAdapter(msg);
-        mainActivity.writeMsgInDB("xpert", "text", text);
+        mainActivity.writeMsgInDB("xpert", "text", text, 0, 0);
     }
 
     private void showImage(String url) {
@@ -903,7 +910,7 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
 //        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
 //        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
         updateRVAdapter(msg);
-        mainActivity.writeMsgInDB("xpert", "image", url);
+        mainActivity.writeMsgInDB("xpert", "image", url, 0, 0);
     }
 
     private void showVideo(String url, int startTime, int stopTime) {
@@ -914,7 +921,7 @@ class AiTask extends AsyncTask<String, Void, AIResponse> {
 //        mainActivity.chatViewAdapter.notifyItemInserted(newMsgPosition);
 //        mainActivity.recyclerView.scrollToPosition(newMsgPosition);
         updateRVAdapter(msg);
-        mainActivity.writeMsgInDB("xpert", "youtube", url);
+        mainActivity.writeMsgInDB("xpert", "youtube", url, startTime, stopTime);
     }
 
     private void updateRVAdapter(ChatViewData msg) {

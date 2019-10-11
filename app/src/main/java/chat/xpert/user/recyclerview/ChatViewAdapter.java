@@ -103,6 +103,7 @@ public class ChatViewAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         else if (chatViewData1.MSG_TYPE_VIDEO.equals(chatViewData1.getMsgType())) {
             final String videoId = chatViewData1.getMsgContent();
             final int startSeconds = chatViewData1.getStartSeconds();
+            final int endSeconds = chatViewData1.getEndSeconds();
             final RelativeLayout relativeLayoutPlay = holder.playRelativeLayout;
             final RelativeLayout relativeLayoutPause = holder.pauseRelativeLayout;
             final GifImageView gifImageView = holder.gifImageView;

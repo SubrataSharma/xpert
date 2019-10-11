@@ -13,6 +13,8 @@ public class ChatViewData {
     private String msgContent;
     // Video start time
     private int startSeconds;
+    // Video end time
+    private int endSeconds;
 
     public ChatViewData(String msgType, String msgContent) {
         this.msgType = msgType;
@@ -31,6 +33,10 @@ public class ChatViewData {
         this.startSeconds = startSeconds;
     }
 
+    public void setEndSeconds(int endSeconds) {
+        this.endSeconds = endSeconds;
+    }
+
     public String getMsgType() {
         return msgType;
     }
@@ -41,5 +47,9 @@ public class ChatViewData {
 
     public int getStartSeconds() {
         return startSeconds;
+    }
+
+    public int getEndSeconds() {
+        return endSeconds;
     }
 }

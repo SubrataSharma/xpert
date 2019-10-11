@@ -50,6 +50,7 @@ public class AskScreen2Activity extends AppCompatActivity {
     private static final String RESPONSE_TYPE_KEY = "response_type"; //text || url || youtube
     private static final String RESPONSE_KEY = "response";
     private static final String ANS_START_KEY = "ans_start";
+    private static final String ANS_END_KEY = "ans_end";
     Query bucket2, bucket3, question;
 
     RecyclerView bucketRecyclerView;
@@ -189,6 +190,7 @@ public class AskScreen2Activity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     String response_type = null, response = null;
                     int video_start = -1;
+                    int video_end = -1;
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         response_type = document.getString(RESPONSE_TYPE_KEY);
@@ -199,6 +201,7 @@ public class AskScreen2Activity extends AppCompatActivity {
                         } else if (response_type.equals("youtube")) {
                             response = document.getString(RESPONSE_KEY);
                             video_start = document.getLong(ANS_START_KEY).intValue();
+                            video_end = document.getLong(ANS_END_KEY).intValue();
                         }
                     }
 
@@ -207,6 +210,7 @@ public class AskScreen2Activity extends AppCompatActivity {
                     editor.putString("response_type", response_type);
                     editor.putString("response", response);
                     editor.putInt("video_start", video_start);
+                    editor.putInt("video_end", video_end);
                     editor.apply();
                     onBackPressed();
                 }
