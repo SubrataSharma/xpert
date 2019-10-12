@@ -616,7 +616,10 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         docData.put(MESSAGE_KEY, message);
         docData.put(TIMESTAMP_KEY, ts);
         docData.put(LANGUAGE_KEY, "english");
-        docData.put(STATUS_KEY, "send");
+        if (sender.equals("user"))
+            docData.put(STATUS_KEY, "send");
+        else if (sender.equals("xpert"))
+            docData.put(STATUS_KEY, "reply");
         docData.put(RESPONSE_DOC_ID_KEY, null);
         docData.put(ANS_START_KEY, ans_start);
         docData.put(ANS_END_KEY, ans_end);
