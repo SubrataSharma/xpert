@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     private static final String RESPONSE_DOC_ID_KEY = "response_doc_id";
     private static final String ANS_START_KEY = "ans_start";
     private static final String ANS_END_KEY = "ans_end";
-    Query content4thBucket, profession;
+    Query profession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,50 +228,64 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     private void showUserIntro() {
-        userInterest = preferences.getString("userInterestAbout" + xpertId, "null");
-
-        if (!userInterest.equals("null")) {
-            relativeLayoutUserIntro.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            linearLayout.setVisibility(View.VISIBLE);
-            createSessionId(userInterest);
-            return;
-        }
-
-        db.collection(XPERT_MASTER_KEY)
+        db.collection(USER_MASTER_KEY)
+                .document(Uid)
+                .collection("following")
                 .document(xpertId)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         try {
-                            String str = documentSnapshot.getString(PROFESSION_KEY);
-                            if (str != null) {
-                                profession = db
-                                        .collection(PROFESION_KEY)
-                                        .whereEqualTo(PROFESION_KEY, str);
+                            userInterest = documentSnapshot.getString(USER_PERSONA_KEY);
 
-                                profession.get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    String prof, inters;
-                                                    try {
-                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                            prof = document.getString(PROFESSION_KEY);
-                                                            inters = document.getString(INTEREST_KEY);
-                                                            prof = prof.replace('-', ' ');
-                                                            inters = inters.toLowerCase();
-                                                            addTextView(prof, inters);
-                                                        }
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            }
-                                        });
+                            if (userInterest != null) {
+                                relativeLayoutUserIntro.setVisibility(View.GONE);
+                                recyclerView.setVisibility(View.VISIBLE);
+                                linearLayout.setVisibility(View.VISIBLE);
+                                createSessionId(userInterest);
+                                return;
                             }
+
+                            db.collection(XPERT_MASTER_KEY)
+                                    .document(xpertId)
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            try {
+                                                String str = documentSnapshot.getString(PROFESSION_KEY);
+                                                if (str != null) {
+                                                    profession = db
+                                                            .collection(PROFESION_KEY)
+                                                            .whereEqualTo(PROFESION_KEY, str);
+
+                                                    profession.get()
+                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        String prof, inters;
+                                                                        try {
+                                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                                prof = document.getString(PROFESSION_KEY);
+                                                                                inters = document.getString(INTEREST_KEY);
+                                                                                prof = prof.replace('-', ' ');
+                                                                                inters = inters.toLowerCase();
+                                                                                addTextView(prof, inters);
+                                                                            }
+                                                                        } catch (Exception e) {
+                                                                            e.printStackTrace();
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -378,47 +392,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     private void set4thBucket() {
-//        content4thBucket = db.collection(XPERT_MASTER_KEY)
-//                .whereEqualTo(NAME_KEY, xpertName);
-//
-//        content4thBucket.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    String str;
-//                    try {
-//                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                            str = document.getString(PROFESSION_KEY);
-//                            str = str.replace('-', ' ');
-//                            str = str.toUpperCase();
-//                            textView_4thBucket.setText(str);
-//                            set4thBucketImage(str);
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-
-//        db.collection(XPERT_MASTER_KEY)
-//                .document(xpertId)
-//                .get()
-//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                        try {
-//                            String str = documentSnapshot.getString(PROFESSION_KEY);
-//                            str = str.replace('-', ' ');
-//                            str = str.toUpperCase();
-//                            textView_4thBucket.setText(str);
-//                            set4thBucketImage(str);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-
         db.collection(XPERT_MASTER_KEY)
                 .document(xpertId)
                 .get()
@@ -494,58 +467,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
 
         sessionId = xpertId + "|" + userPhone + "|" + userInterest + "|" + xpertIdChatCount;
         Log.i("sessionId", sessionId);
-
-        /*db.collection(XPERT_MASTER_KEY)
-                .document(xpertId)
-                .collection("chats")
-                .document(userPhone)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                        String senderId = documentSnapshot.getString(SENDER_ID_KEY);
-
-                        if (senderId == null) {
-                            Map<String, Object> docData = new HashMap<>();
-                            docData.put(FIRST_NAME_KEY, null);
-                            docData.put(LAST_NAME_KEY, null);
-                            docData.put(PROFILE_PIC_KEY, null);
-                            docData.put(GENDER_KEY, null);
-                            docData.put(SENDER_ID_KEY, userPhone);
-                            docData.put(SESSION_ID_KEY, sessionId);
-                            docData.put(LAST_CHAT_ON_KEY, FieldValue.serverTimestamp());
-                            docData.put(STARTED_ON_KEY, FieldValue.serverTimestamp());
-                            docData.put(SOURCE_KEY, "messenger");
-                            docData.put(USER_PERSONA_KEY, "Fan");
-
-                            db.collection(XPERT_MASTER_KEY)
-                                    .document(xpertId)
-                                    .collection("chats")
-                                    .document(userPhone)
-                                    .set(docData)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                        }
-                                    });
-                        } else {
-                            Map<String, Object> docData = new HashMap<>();
-                            docData.put(LAST_CHAT_ON_KEY, FieldValue.serverTimestamp());
-
-                            db.collection(XPERT_MASTER_KEY)
-                                    .document(xpertId)
-                                    .collection("chats")
-                                    .document(userPhone)
-                                    .update(docData)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                        }
-                                    });
-                        }
-                    }
-                });*/
     }
 
     public void funFacts(View view) {
@@ -799,40 +720,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
         }
-    }
-
-    private void loadChatContent() {
-        Query query = db.collection(USER_MASTER_KEY)
-                .document(Uid)
-                .collection("following")
-                .document(xpertId)
-                .collection("chat_transcript")
-                .orderBy(TIMESTAMP_KEY);
-
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (document.get(SENDER_KEY).toString().equals("user")) {
-                            Log.i("message", document.getString(MESSAGE_KEY));
-                            showUserText(document.getString("message"));
-                        }
-                        if (document.get(SENDER_KEY).equals("xpert")) {
-                            Log.i("message", document.getString(MESSAGE_KEY));
-                            if (document.getString(MESSAGE_TYPE_KEY).equals("text"))
-                                showText(document.getString(MESSAGE_KEY));
-                            else if (document.getString(MESSAGE_TYPE_KEY).equals("image"))
-                                showImage(document.getString(MESSAGE_KEY));
-                            else if (document.getString(MESSAGE_TYPE_KEY).equals("youtube"))
-                                showVideo(document.getString(MESSAGE_KEY), document.getLong(ANS_START_KEY).intValue(), document.getLong(ANS_END_KEY).intValue());
-                        }
-                    }
-                } else {
-                    Log.d("message", "Error getting documents: ", task.getException());
-                }
-            }
-        });
     }
 }
 
