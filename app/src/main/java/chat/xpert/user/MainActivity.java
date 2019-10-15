@@ -533,7 +533,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     private void callDialogFlow(String msg) {
-        new AiTask(MainActivity.this, aiDataService).execute(msg, "", "", sessionId);
 //        aiService.startListening();
     }
 
@@ -722,118 +721,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         if (view2 != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
-        }
-    }
-}
-
-class AiTask extends AsyncTask<String, Void, AIResponse> {
-
-    MainActivity mainActivity;
-    private final AIDataService aiService;
-
-    AiTask(MainActivity mainActivity, AIDataService aiService) {
-        this.mainActivity = mainActivity;
-        this.aiService = aiService;
-    }
-
-    @Override
-    protected void onPreExecute() {
-    }
-
-    @Override
-    protected AIResponse doInBackground(final String... params) {
-        AIRequest request = new AIRequest();
-        String query = params[0];
-        String event = params[1];
-        String context = params[2];
-        String sessionId = params[3];
-
-        if (!TextUtils.isEmpty(query)) {
-            request.setQuery(query);
-            Log.i("query", query);
-            request.setSessionId(sessionId);
-            Log.i("sessionId", sessionId);
-        }
-
-        if (!TextUtils.isEmpty(event)) {
-            request.setEvent(new AIEvent(event));
-        }
-
-        RequestExtras requestExtras = null;
-        if (!TextUtils.isEmpty(context)) {
-            final List<AIContext> contexts = Collections.singletonList(new AIContext(context));
-            requestExtras = new RequestExtras(contexts, null);
-        }
-
-        try {
-            return aiService.request(request, requestExtras);
-        } catch (final AIServiceException e) {
-            return null;
-        }
-    }
-
-    @Override
-    protected void onPostExecute(final AIResponse response) {
-        if (response != null) {
-            Log.i("sessionId", response.getSessionId());
-            final Result result = response.getResult();
-            final String speech = result.getFulfillment().getSpeech();
-            //Toast.makeText(context.get(), speech, Toast.LENGTH_LONG).show();
-            //result.getResolvedQuery()
-
-//            text -- text{}content separated by {|}
-//            image -- image{}content  separated by {|}
-//            bubble separation {|}
-//            String ex = "text{}content1{|}content2{|}content3";
-//            youtube -- youtube{}video_id(|)start(|)end
-//            String ex = "youtube{}TqUbiOgEb0w(|)88(|)200";
-
-            Log.i("RESULT", speech);
-            String speech2 = speech.replace("{}", "|");
-            String[] splitSpeech = speech2.split("\\|");
-
-            String type = null;
-            String url = null;
-            int startTime = 0, stopTime = 0;
-            int count = 0;
-
-            for (String s : splitSpeech) {
-                Log.i("RESULT", s);
-                s = s.replace("{", "");
-                s = s.replace("}", "");
-                s = s.replace("(", "");
-                s = s.replace(")", "");
-
-                if (s.equals("text") || s.equals("image") || s.equals("youtube")) {
-                    type = s;
-                    continue;
-                }
-
-                try {
-                    if (type.equals("text")) {
-                        mainActivity.writeMsgInDB("xpert", "text", s, 0, 0);
-                        type = null;
-                    } else if (type.equals("image")) {
-                        mainActivity.writeMsgInDB("xpert", "image", s, 0, 0);
-                        type = null;
-                    } else if (type.equals("youtube")) {
-                        if (count == 0) {
-                            url = s;
-                            count++;
-                        } else if (count == 1) {
-                            startTime = Integer.parseInt(s);
-                            count++;
-                        } else if (count == 2) {
-                            stopTime = Integer.parseInt(s);
-                            count = 0;
-                            mainActivity.writeMsgInDB("xpert", "youtube", url, startTime, stopTime);
-                            type = null;
-                        }
-                    }
-                } catch (Exception e) {
-                    mainActivity.writeMsgInDB("xpert", "text", s, 0, 0);
-                }
-            }
         }
     }
 }
