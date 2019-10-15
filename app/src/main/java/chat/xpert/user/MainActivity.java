@@ -11,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -26,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,26 +50,13 @@ import com.squareup.picasso.Picasso;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ai.api.AIListener;
-import ai.api.AIServiceException;
-import ai.api.RequestExtras;
-import ai.api.android.AIConfiguration;
-import ai.api.android.AIDataService;
-import ai.api.android.AIService;
-import ai.api.model.AIContext;
-import ai.api.model.AIError;
-import ai.api.model.AIEvent;
-import ai.api.model.AIRequest;
-import ai.api.model.AIResponse;
-import ai.api.model.Result;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements AIListener {
+public class MainActivity extends AppCompatActivity {
 
     String TAG = "logtag";
 
@@ -90,9 +74,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     final List<ChatViewData> chatViewData = new ArrayList<>();
     ChatViewAdapter chatViewAdapter;
     int itemInsertPosition = 0;
-
-    AIService aiService;
-    AIDataService aiDataService;
 
     private SharedPreferences preferences;
 
@@ -215,14 +196,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         chatViewAdapter = new ChatViewAdapter(chatViewData);
         // Set data adapter to RecyclerView.
         recyclerView.setAdapter(chatViewAdapter);
-
-        final AIConfiguration config = new AIConfiguration("5a28a24679e6411699636dc44558724c",
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        aiService = AIService.getService(this, config);
-        aiService.setListener(this);
-        aiDataService = new AIDataService(this, config);
 
         db = FirebaseFirestore.getInstance();
     }
@@ -533,34 +506,6 @@ public class MainActivity extends AppCompatActivity implements AIListener {
     }
 
     private void callDialogFlow(String msg) {
-//        aiService.startListening();
-    }
-
-    @Override
-    public void onResult(AIResponse result) {
-        Result result1 = result.getResult();
-        Toast.makeText(this, "Query: " + result1.getResolvedQuery() + "\nAction: " + result1.getAction(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, result1.getFulfillment().getSpeech(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onError(AIError error) {
-    }
-
-    @Override
-    public void onAudioLevel(float level) {
-    }
-
-    @Override
-    public void onListeningStarted() {
-    }
-
-    @Override
-    public void onListeningCanceled() {
-    }
-
-    @Override
-    public void onListeningFinished() {
     }
 
     @Override
