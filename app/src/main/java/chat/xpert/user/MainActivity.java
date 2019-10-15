@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
     String userInterest = "null";
     String xpertInterest = "";
 
+    Boolean typingImage = false;
+
     FirebaseAuth mAuth;
 
     FirebaseFirestore db;
@@ -629,20 +631,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showUserText(String text) {
+        if (typingImage) {
+            final ChatViewData msgTemp = new ChatViewData("", "");
+            updateRVAdapter(msgTemp);
+        }
+
         ChatViewData msg = new ChatViewData(ChatViewData.MSG_TYPE_SENT, text);
         recyclerView.smoothScrollToPosition(chatViewAdapter.addChatData(msg));
         itemInsertPosition = this.chatViewAdapter.addChatData(new ChatViewData(ChatViewData.MSG_TYPE_PACEHOLDER, ""));
         recyclerView.smoothScrollToPosition(itemInsertPosition);
+        typingImage = true;
     }
 
     private void showText(String text) {
         final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_RECEIVED, text);
         updateRVAdapter(msgTemp);
+        typingImage = false;
     }
 
     private void showImage(String url) {
         final ChatViewData msgTemp = new ChatViewData(ChatViewData.MSG_TYPE_IMAGE, url);
         updateRVAdapter(msgTemp);
+        typingImage = false;
     }
 
     private void showVideo(String url, int startTime, int stopTime) {
@@ -650,6 +660,7 @@ public class MainActivity extends AppCompatActivity {
         msgTemp.setStartSeconds(startTime);
         msgTemp.setEndSeconds(stopTime);
         updateRVAdapter(msgTemp);
+        typingImage = false;
     }
 
     private void updateRVAdapter(ChatViewData msg) {
