@@ -291,11 +291,11 @@ public class MainActivity extends AppCompatActivity {
                 uploadUserInterest(prof);
 
                 String s1 = "Hi " + userName;
-                writeMsgInDB("xpert", "text", s1, 0, 0);
+                writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
                 String s2 = "Nice to meet a fellow " + prof;
-                writeMsgInDB("xpert", "text", s2, 0, 0);
+                writeMsgInDB("xpert", "text", s2, "reply", 0, 0);
                 String s3 = "Feel free to ask me about my journey, " + inters + " or anything else.";
-                writeMsgInDB("xpert", "text", s3, 0, 0);
+                writeMsgInDB("xpert", "text", s3, "reply", 0, 0);
             }
         });
         textViewIntro2.setOnClickListener(new View.OnClickListener() {
@@ -312,11 +312,11 @@ public class MainActivity extends AppCompatActivity {
                 uploadUserInterest(inters);
 
                 String s1 = "Hi " + userName;
-                writeMsgInDB("xpert", "text", s1, 0, 0);
+                writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
                 s1 = "Great to see you are interested in " + inters + ".";
-                writeMsgInDB("xpert", "text", s1, 0, 0);
+                writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
                 s1 = "Feel free to ask me about " + inters + ", my opinions or anything else.";
-                writeMsgInDB("xpert", "text", s1, 0, 0);
+                writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
             }
         });
         textViewIntro3.setOnClickListener(new View.OnClickListener() {
@@ -333,11 +333,11 @@ public class MainActivity extends AppCompatActivity {
                 uploadUserInterest("fan");
 
                 String s1 = "Hi " + userName;
-                writeMsgInDB("xpert", "text", s1, 0, 0);
+                writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
                 String s2 = "Glad to finally meet you !";
-                writeMsgInDB("xpert", "text", s2, 0, 0);
+                writeMsgInDB("xpert", "text", s2, "reply", 0, 0);
                 String s3 = "Thank you for your support,\nHow are you doing today?";
-                writeMsgInDB("xpert", "text", s3, 0, 0);
+                writeMsgInDB("xpert", "text", s3, "reply", 0, 0);
             }
         });
     }
@@ -501,7 +501,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            writeMsgInDB("user", "text", msgEditText, 0, 0);
+            writeMsgInDB("user", "text", msgEditText, "send", 0, 0);
 
             editText.setText("");
         }
@@ -521,20 +521,20 @@ public class MainActivity extends AppCompatActivity {
         final int video_end = preferences.getInt("video_end", -1);
 
         if (response_type != null && response != null && !response.equals("")) {
-            writeMsgInDB("user", "text", question_content, 0, 0);
+            writeMsgInDB("user", "text", question_content, "ignore", 0, 0);
 
             if (response_type.equals("youtube")) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        writeMsgInDB("xpert", "youtube", response, video_start, video_end);
+                        writeMsgInDB("xpert", "youtube", response, "ignore", video_start, video_end);
                     }
                 }, 3000);
             } else if (response_type.equals("text")) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        writeMsgInDB("xpert", "text", response, 0, 0);
+                        writeMsgInDB("xpert", "text", response, "ignore", 0, 0);
                     }
                 }, 3000);
             }
@@ -549,7 +549,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void writeMsgInDB(String sender, String message_type, String message, int ans_start, int ans_end) {
+    public void writeMsgInDB(String sender, String message_type, String message, String status_key, int ans_start, int ans_end) {
 
         Date date = new Date();
         long time = date.getTime(); //Time in Milliseconds
@@ -562,10 +562,7 @@ public class MainActivity extends AppCompatActivity {
         docData.put(MESSAGE_KEY, message);
         docData.put(TIMESTAMP_KEY, ts);
         docData.put(LANGUAGE_KEY, "english");
-        if (sender.equals("user"))
-            docData.put(STATUS_KEY, "send");
-        else if (sender.equals("xpert"))
-            docData.put(STATUS_KEY, "reply");
+        docData.put(STATUS_KEY, status_key);    // send|reply|ignore
         docData.put(RESPONSE_DOC_ID_KEY, null);
         docData.put(ANS_START_KEY, ans_start);
         docData.put(ANS_END_KEY, ans_end);
