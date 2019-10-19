@@ -42,7 +42,7 @@
                 android:paddingEnd="5dp"
                 android:paddingBottom="10dp"
                 android:textColor="@color/black"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 tools:text="I am / want to be a cricketer" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:paddingEnd="5dp"
                 android:paddingBottom="10dp"
                 android:textColor="@color/black"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 tools:text="I enjoy playing cricket" />
 
             <TextView
@@ -79,7 +79,7 @@
                 android:paddingBottom="10dp"
                 android:text="I am your fan"
                 android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </RelativeLayout>
 

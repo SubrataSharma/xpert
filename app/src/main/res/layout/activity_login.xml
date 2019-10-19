@@ -15,17 +15,26 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_design_1" />
+        android:background="@drawable/bg_design_12" />
+
+    <ImageView
+        android:id="@+id/login_icon_xpert"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:src="@drawable/image_icon_xpert" />
 
     <TextView
         android:id="@+id/login_welcome_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_below="@+id/login_icon_xpert"
+        android:layout_marginTop="20dp"
         android:background="@android:color/transparent"
         android:gravity="center"
         android:padding="10dp"
-        android:text="@string/welcome_to_xpert"
+        android:text="@string/create_an_account"
         android:textColor="@color/white"
         android:textSize="30sp" />
 
@@ -36,35 +45,58 @@
         android:layout_below="@+id/login_welcome_text"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="25dp"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_person_outlin" />
+            android:src="@drawable/image_icons_user" />
 
         <EditText
             android:id="@+id/login_user_name"
-            android:layout_width="match_parent"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:background="#00000000"
-            android:hint="@string/name"
+            android:hint="@string/first_name"
+            android:inputType="textPersonName"
+            android:maxLength="35"
+            android:nextFocusDown="@id/login_user_last_name"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white65"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/login_user_last_name"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:background="#00000000"
+            android:hint="@string/last_name"
             android:inputType="textPersonName"
             android:maxLength="35"
             android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textSize="25sp" />
+            android:textColorHint="@color/white65"
+            android:textSize="20sp" />
     </LinearLayout>
+
+    <View
+        android:layout_width="165dp"
+        android:layout_height="2dp"
+        android:layout_below="@+id/login_linear_layout"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="25dp"
+        android:background="@color/white" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@+id/login_linear_layout"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="200dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="25dp"
         android:background="@color/white" />
@@ -86,7 +118,7 @@
             android:layout_gravity="center"
             android:text="+91"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/login_user_phone"
@@ -98,8 +130,8 @@
             android:inputType="phone"
             android:maxLength="10"
             android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textSize="25sp" />
+            android:textColorHint="@color/white65"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <View
@@ -127,7 +159,7 @@
     <Button
         android:id="@+id/login_btn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="@color/colorAccent"
         android:fontFamily="@font/roboto_bold"
@@ -135,6 +167,6 @@
         android:text="@string/agree_and_continue"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
 </RelativeLayout>

@@ -29,11 +29,11 @@ import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText nameEditText, phoneEditText;
+    EditText nameEditText, lastnameEditText, phoneEditText;
     AppCompatTextView termsTextView;
     Button loginButton;
 
-    String name, phone, userIdPhone;
+    String name, lastName, phone, userIdPhone;
 
     private SharedPreferences preferences;
 
@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void init() {
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         nameEditText = findViewById(R.id.login_user_name);
+        lastnameEditText = findViewById(R.id.login_user_last_name);
         phoneEditText = findViewById(R.id.login_user_phone);
         termsTextView = findViewById(R.id.login_terms);
         loginButton = findViewById(R.id.login_btn);
@@ -133,6 +134,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("userName", name);
+                editor.putString("userLastName", lastName);
                 editor.putString("userPhone", phone);
                 editor.apply();
                 Intent in = new Intent(LoginActivity.this, OtpActivity.class);
@@ -145,6 +147,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private boolean validateName() {
         name = nameEditText.getText().toString().trim();
+        lastName = lastnameEditText.getText().toString().trim();
         if (name.isEmpty() || name.length() < 3) {
             Toast.makeText(this, "Enter your full name", Toast.LENGTH_SHORT).show();
             return false;

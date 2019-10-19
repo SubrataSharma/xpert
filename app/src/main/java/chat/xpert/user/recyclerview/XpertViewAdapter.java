@@ -8,7 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pabitrarista.chatdialog.R;
+
 import chat.xpert.user.XpertListActivity;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class XpertViewAdapter extends RecyclerView.Adapter<XpertViewHolder> {
             Picasso.get().load(R.drawable.icon_dp).into(holder.circleImageView);
         }
 
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 xpertListActivity.showXpertChat(xpertName.get(position), xpertImage.get(position), xpertId.get(position));

@@ -3,9 +3,11 @@
 
     <string name="sample_text">Sample Text</string>
 
-    <string name="name">Name</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
     <string name="phone">Phone No.</string>
     <string name="welcome_to_xpert">Welcome to Xpert</string>
+    <string name="create_an_account">Create an Account</string>
     <string name="agree_and_continue">Agree &amp; Continue</string>
     <string name="accept_terms">TAP: Agree &amp; Continue to accept Xperts Terms of Service and Privacy Policy.</string>
     <string name="url_privacy">https://www.releasemyad.com/privacy_poliicy.php</string>
