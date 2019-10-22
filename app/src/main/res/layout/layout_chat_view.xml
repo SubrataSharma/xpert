@@ -114,6 +114,7 @@
             android:id="@+id/view_chat_item_play_pause_gif"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
             android:src="@drawable/image_play"
             android:visibility="gone" />
     </RelativeLayout>

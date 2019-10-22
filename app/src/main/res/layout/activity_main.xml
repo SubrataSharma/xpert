@@ -137,12 +137,23 @@
                             android:gravity="center">
 
                             <TextView
+                                android:id="@+id/main_tv1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/roboto_bold"
                                 android:text="LIFE"
                                 android:textColor="#ffffff"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:id="@+id/main_bucket_1_underline"
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_below="@+id/main_tv1"
+                                android:layout_alignStart="@+id/main_tv1"
+                                android:layout_alignEnd="@+id/main_tv1"
+                                android:background="#ffffff"
+                                android:visibility="gone" />
                         </RelativeLayout>
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
@@ -176,6 +187,16 @@
                             android:fontFamily="@font/roboto_bold"
                             android:textColor="#ffffff"
                             tools:text="CRICKET" />
+
+                        <View
+                            android:id="@+id/main_bucket_2_underline"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_below="@+id/main_4thBucket_textView"
+                            android:layout_alignStart="@+id/main_4thBucket_textView"
+                            android:layout_alignEnd="@+id/main_4thBucket_textView"
+                            android:background="#ffffff"
+                            android:visibility="gone" />
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -199,11 +220,22 @@
                         android:gravity="center">
 
                         <TextView
+                            android:id="@+id/main_tv3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_bold"
                             android:text="OPINIONS"
                             android:textColor="#ffffff" />
+
+                        <View
+                            android:id="@+id/main_bucket_3_underline"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_below="@+id/main_tv3"
+                            android:layout_alignStart="@+id/main_tv3"
+                            android:layout_alignEnd="@+id/main_tv3"
+                            android:background="#ffffff"
+                            android:visibility="gone" />
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -228,11 +260,22 @@
                         android:gravity="center">
 
                         <TextView
+                            android:id="@+id/main_tv4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_bold"
                             android:text="FUN FACTS"
                             android:textColor="#ffffff" />
+
+                        <View
+                            android:id="@+id/main_bucket_4_underline"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_below="@+id/main_tv4"
+                            android:layout_alignStart="@+id/main_tv4"
+                            android:layout_alignEnd="@+id/main_tv4"
+                            android:background="#ffffff"
+                            android:visibility="gone" />
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>

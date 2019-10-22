@@ -451,6 +451,7 @@ public class MainActivity extends AppCompatActivity {
         in.putExtra("bucket", BUCKET_3_KEY);
         in.putExtra("title", "My Trivia");
         startActivity(in);
+        findViewById(R.id.main_bucket_4_underline).setVisibility(View.VISIBLE);
     }
 
     public void opinions(View view) {
@@ -460,6 +461,7 @@ public class MainActivity extends AppCompatActivity {
         in.putExtra("bucket", BUCKET_3_KEY);
         in.putExtra("title", "My Opinions");
         startActivity(in);
+        findViewById(R.id.main_bucket_3_underline).setVisibility(View.VISIBLE);
     }
 
     public void life(View view) {
@@ -469,6 +471,7 @@ public class MainActivity extends AppCompatActivity {
         in.putExtra("bucket", BUCKET_4_KEY);
         in.putExtra("title", "My Life");
         startActivity(in);
+        findViewById(R.id.main_bucket_1_underline).setVisibility(View.VISIBLE);
     }
 
     public void bucket4(View view) {
@@ -478,6 +481,7 @@ public class MainActivity extends AppCompatActivity {
         in.putExtra("bucket", BUCKET_4_KEY);
         in.putExtra("title", xpertInterest);
         startActivity(in);
+        findViewById(R.id.main_bucket_2_underline).setVisibility(View.VISIBLE);
     }
 
     public void sendMsg(View view) {

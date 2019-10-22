@@ -15,81 +15,75 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_design_1" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/bg_design_12" />
+
+    <ImageView
+        android:id="@+id/otp_icon_xpert"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:src="@drawable/image_icon_xpert" />
+
+    <TextView
+        android:id="@+id/otp_submit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/otp_icon_xpert"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/submit_otp"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
     <LinearLayout
+        android:id="@+id/otp_linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/otp_submit_text"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/o_otp_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="150dp"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusBottomEnd="@dimen/edit_text_corner_radius"
-            app:boxCornerRadiusBottomStart="@dimen/edit_text_corner_radius"
-            app:boxCornerRadiusTopEnd="@dimen/edit_text_corner_radius"
-            app:boxCornerRadiusTopStart="@dimen/edit_text_corner_radius"
-            app:boxStrokeColor="@color/colorAccent">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etDigit1"
+            style="@style/etDigits"
+            android:nextFocusDown="@+id/etDigit2"
+            app:backgroundTint="@color/white65" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/o_otp"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="6"
-                android:paddingStart="@dimen/edit_text_padding"
-                android:paddingEnd="@dimen/edit_text_padding"
-                android:textColor="@color/colorAccent" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etDigit2"
+            style="@style/etDigits"
+            android:nextFocusDown="@+id/etDigit3"
+            app:backgroundTint="@color/white65" />
 
-        <Button
-            android:id="@+id/o_verify"
-            android:layout_width="250dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_design_5"
-            android:fontFamily="serif"
-            android:text="VERIFY"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etDigit3"
+            style="@style/etDigits"
+            android:nextFocusDown="@+id/etDigit4"
+            app:backgroundTint="@color/white65" />
 
-        <RelativeLayout
-            android:layout_width="250dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_design_11">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etDigit4"
+            style="@style/etDigits"
+            android:nextFocusDown="@+id/etDigit5"
+            app:backgroundTint="@color/white65" />
 
-            <Button
-                android:id="@+id/o_resend"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:background="@android:color/transparent"
-                android:enabled="false"
-                android:fontFamily="serif"
-                android:text="RESEND"
-                android:textColor="@color/colorAccent"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etDigit5"
+            style="@style/etDigits"
+            android:nextFocusDown="@+id/etDigit6"
+            app:backgroundTint="@color/white65" />
 
-            <TextView
-                android:id="@+id/o_resend_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="30dp"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp"
-                tools:text="60" />
-        </RelativeLayout>
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etDigit6"
+            style="@style/etDigits"
+            app:backgroundTint="@color/white65" />
     </LinearLayout>
 
     <ProgressBar
@@ -101,5 +95,67 @@
         android:indeterminate="true"
         android:indeterminateDrawable="@drawable/bg_design_10"
         android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/otp_resend_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/otp_linear_layout"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/did_not_receive_otp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/otp_resend_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/resend"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/otp_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/otp_terms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/otp_btn"
+        android:layout_margin="15dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/accept_terms"
+        android:textColor="@color/white"
+        android:textSize="13sp" />
+
+    <Button
+        android:id="@+id/otp_btn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:fontFamily="@font/roboto_bold"
+        android:padding="8dp"
+        android:text="@string/agree_and_continue"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 
 </RelativeLayout>
