@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -36,8 +37,13 @@ public class AskScreen2Activity extends AppCompatActivity {
     String title = null;
     private SharedPreferences preferences;
 
+    String Uid;
+
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
+    private static final String USER_MASTER_KEY = "user_master";
+    private static final String FOLLOWING_KEY = "following";
+    private static final String EXP_RESPONSE_KEY = "exp_response";
     private static final String A_R_RAHMAN_KEY = "a-r-rahman";
     private static final String SACHIN_BANSAL = "sachin-bansal";
     private static final String RESPONSES_KEY = "responses";
@@ -95,6 +101,8 @@ public class AskScreen2Activity extends AppCompatActivity {
     private void init() {
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+        Uid = FirebaseAuth.getInstance().getUid();
+
         db = FirebaseFirestore.getInstance();
 
         bucketRecyclerView = findViewById(R.id.ask_screen2_recycler_view);
@@ -107,9 +115,11 @@ public class AskScreen2Activity extends AppCompatActivity {
     }
 
     private void setBucket() {
-        bucket2 = db.collection(XPERT_MASTER_KEY)
+        bucket2 = db.collection(USER_MASTER_KEY)
+                .document(Uid)
+                .collection(FOLLOWING_KEY)
                 .document(xpertId)
-                .collection(RESPONSES_KEY)
+                .collection(EXP_RESPONSE_KEY)
                 .whereEqualTo(BUCKET_1_KEY, "exp")
                 .whereEqualTo(BUCKET_2_KEY, option)
                 .whereEqualTo(ANSWER_STATUS_KEY, "custom");
