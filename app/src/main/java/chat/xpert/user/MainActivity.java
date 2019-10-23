@@ -173,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
         hideBucket();
 
         firestoreListener();
+
+        bucketUnderline(preferences.getInt(xpertId + "_selected_bucket", 0));
     }
 
     private void init() {
@@ -451,7 +453,8 @@ public class MainActivity extends AppCompatActivity {
         in.putExtra("bucket", BUCKET_3_KEY);
         in.putExtra("title", "My Trivia");
         startActivity(in);
-        findViewById(R.id.main_bucket_4_underline).setVisibility(View.VISIBLE);
+        overridePendingTransition(R.anim.go_up, R.anim.still);
+        bucketUnderline(4);
     }
 
     public void opinions(View view) {
@@ -461,7 +464,8 @@ public class MainActivity extends AppCompatActivity {
         in.putExtra("bucket", BUCKET_3_KEY);
         in.putExtra("title", "My Opinions");
         startActivity(in);
-        findViewById(R.id.main_bucket_3_underline).setVisibility(View.VISIBLE);
+        overridePendingTransition(R.anim.go_up, R.anim.still);
+        bucketUnderline(3);
     }
 
     public void life(View view) {
@@ -471,7 +475,8 @@ public class MainActivity extends AppCompatActivity {
         in.putExtra("bucket", BUCKET_4_KEY);
         in.putExtra("title", "My Life");
         startActivity(in);
-        findViewById(R.id.main_bucket_1_underline).setVisibility(View.VISIBLE);
+        overridePendingTransition(R.anim.go_up, R.anim.still);
+        bucketUnderline(1);
     }
 
     public void bucket4(View view) {
@@ -481,7 +486,47 @@ public class MainActivity extends AppCompatActivity {
         in.putExtra("bucket", BUCKET_4_KEY);
         in.putExtra("title", xpertInterest);
         startActivity(in);
-        findViewById(R.id.main_bucket_2_underline).setVisibility(View.VISIBLE);
+        overridePendingTransition(R.anim.go_up, R.anim.still);
+        bucketUnderline(2);
+    }
+
+    private void bucketUnderline(int no) {
+        switch (no) {
+            case 0:
+                findViewById(R.id.main_bucket_1_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_2_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_3_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_4_underline).setVisibility(View.GONE);
+                break;
+            case 1:
+                findViewById(R.id.main_bucket_1_underline).setVisibility(View.VISIBLE);
+                findViewById(R.id.main_bucket_2_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_3_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_4_underline).setVisibility(View.GONE);
+                break;
+            case 2:
+                findViewById(R.id.main_bucket_1_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_2_underline).setVisibility(View.VISIBLE);
+                findViewById(R.id.main_bucket_3_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_4_underline).setVisibility(View.GONE);
+                break;
+            case 3:
+                findViewById(R.id.main_bucket_1_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_2_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_3_underline).setVisibility(View.VISIBLE);
+                findViewById(R.id.main_bucket_4_underline).setVisibility(View.GONE);
+                break;
+            case 4:
+                findViewById(R.id.main_bucket_1_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_2_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_3_underline).setVisibility(View.GONE);
+                findViewById(R.id.main_bucket_4_underline).setVisibility(View.VISIBLE);
+                break;
+        }
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(xpertId + "_selected_bucket", no);
+        editor.apply();
     }
 
     public void sendMsg(View view) {

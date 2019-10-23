@@ -227,4 +227,10 @@ public class AskScreen2Activity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.still, R.anim.go_down);
+    }
 }
