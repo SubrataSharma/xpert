@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     String xpertName, xpertImage, xpertId, Uid;
     int xpertIdChatCount;
     String sessionId = null;
-    String userPhone, userName;
+    String userPhone, userFirstName;
 
     String userInterest = "null";
     String xpertInterest = "";
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         userPhone = preferences.getString("userPhone", "null");
-        userName = preferences.getString("userName", "null");
+        userFirstName = preferences.getString("userFirstName", "null");
 
         xpertName = getIntent().getStringExtra("xpertName");
         xpertImage = getIntent().getStringExtra("xpertImage");
@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
                 createSessionId(prof);
                 uploadUserInterest(prof);
 
-                String s1 = "Hi " + userName;
+                String s1 = "Hi " + userFirstName;
                 writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
                 String s2 = "Nice to meet a fellow " + prof;
                 writeMsgInDB("xpert", "text", s2, "reply", 0, 0);
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                 createSessionId(inters);
                 uploadUserInterest(inters);
 
-                String s1 = "Hi " + userName;
+                String s1 = "Hi " + userFirstName;
                 writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
                 s1 = "Great to see you are interested in " + inters + ".";
                 writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
                 createSessionId("fan");
                 uploadUserInterest("fan");
 
-                String s1 = "Hi " + userName;
+                String s1 = "Hi " + userFirstName;
                 writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
                 String s2 = "Glad to finally meet you !";
                 writeMsgInDB("xpert", "text", s2, "reply", 0, 0);

@@ -7,10 +7,12 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -28,6 +30,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
@@ -35,6 +38,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.pabitrarista.chatdialog.R;
 
 import java.util.concurrent.TimeUnit;
@@ -57,8 +62,15 @@ public class OtpActivity extends AppCompatActivity {
 
     private String verificationId;
     private FirebaseAuth mAuth;
+    FirebaseFirestore db;
 
-    String phone, userIdPhone;
+    private SharedPreferences preferences;
+
+    String phone, userIdPhone, Uid, firstName, lastName;
+
+    private static final String USER_MASTER_KEY = "user_master";
+    private static final String FIRST_NAME_KEY = "first_name";
+    private static final String LAST_NAME_KEY = "last_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -474,9 +486,7 @@ public class OtpActivity extends AppCompatActivity {
                             } catch (Exception e) {
                             }
 
-                            Intent in2 = new Intent(getApplicationContext(), XpertListActivity.class);
-                            in2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(in2);
+                            gettingUser();
                         } else {
                             button.setEnabled(true);
                             resendTv.setVisibility(View.VISIBLE);
@@ -493,6 +503,39 @@ public class OtpActivity extends AppCompatActivity {
                         resendTv.setVisibility(View.VISIBLE);
                         tvCountDownTimer.setVisibility(View.GONE);
                         progressBar.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    private void gettingUser() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        Uid = mAuth.getUid();
+        db = FirebaseFirestore.getInstance();
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        db.collection(USER_MASTER_KEY)
+                .document(Uid)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        firstName = documentSnapshot.getString(FIRST_NAME_KEY);
+                        lastName = documentSnapshot.getString(LAST_NAME_KEY);
+
+                        if (firstName != null && lastName != null) {
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("userFirstName", firstName);
+                            editor.putString("userLastName", lastName);
+                            editor.apply();
+
+                            Intent in2 = new Intent(getApplicationContext(), XpertListActivity.class);
+                            in2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(in2);
+                        } else {
+                            Intent in2 = new Intent(getApplicationContext(), RegisterActivity.class);
+                            in2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(in2);
+                        }
                     }
                 });
     }

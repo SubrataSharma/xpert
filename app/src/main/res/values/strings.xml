@@ -12,6 +12,7 @@
     <string name="did_not_receive_otp">Didn\'t receive OTP?</string>
     <string name="resend">Resend</string>
     <string name="agree_and_continue">Agree &amp; Continue</string>
+    <string name="continue_string">Continue</string>
     <string name="accept_terms">TAP: Agree &amp; Continue to accept Xperts Terms of Service and Privacy Policy.</string>
     <string name="url_privacy">https://www.releasemyad.com/privacy_poliicy.php</string>
     <string name="url_terms">https://www.releasemyad.com/terms_conditions.php</string>

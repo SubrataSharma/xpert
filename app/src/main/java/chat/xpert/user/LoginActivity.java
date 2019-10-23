@@ -29,11 +29,11 @@ import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText nameEditText, lastnameEditText, phoneEditText;
+    EditText phoneEditText;
     AppCompatTextView termsTextView;
     Button loginButton;
 
-    String name, lastName, phone, userIdPhone;
+    String phone, userIdPhone, userFirstName;
 
     private SharedPreferences preferences;
 
@@ -51,8 +51,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void init() {
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        nameEditText = findViewById(R.id.login_user_name);
-        lastnameEditText = findViewById(R.id.login_user_last_name);
         phoneEditText = findViewById(R.id.login_user_phone);
         termsTextView = findViewById(R.id.login_terms);
         loginButton = findViewById(R.id.login_btn);
@@ -66,9 +64,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             userIdPhone = mUser.getPhoneNumber();
 
             if (userIdPhone != null) {
-                Intent in = new Intent(LoginActivity.this, XpertListActivity.class);
-                startActivity(in);
-                finish();
+                userFirstName = preferences.getString("userFirstName", "null");
+                if (!userFirstName.equals("null")) {
+                    Intent in = new Intent(LoginActivity.this, XpertListActivity.class);
+                    startActivity(in);
+                    finish();
+                } else {
+                    Intent in = new Intent(LoginActivity.this, RegisterActivity.class);
+                    startActivity(in);
+                    finish();
+                }
             }
         } catch (NullPointerException e) {
             Toast.makeText(getApplicationContext(), "Please Verify Phone no", Toast.LENGTH_SHORT).show();
@@ -129,12 +134,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_btn:
-                if (!validateName() || !validatePhone())
+                if (!validatePhone())
                     return;
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("userName", name);
-                editor.putString("userLastName", lastName);
                 editor.putString("userPhone", phone);
                 editor.apply();
                 Intent in = new Intent(LoginActivity.this, OtpActivity.class);
@@ -143,16 +146,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(in);
                 //finish();
         }
-    }
-
-    private boolean validateName() {
-        name = nameEditText.getText().toString().trim();
-        lastName = lastnameEditText.getText().toString().trim();
-        if (name.isEmpty() || name.length() < 3) {
-            Toast.makeText(this, "Enter your full name", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
     }
 
     private boolean validatePhone() {
