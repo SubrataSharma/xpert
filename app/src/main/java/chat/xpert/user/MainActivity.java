@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore db;
     private static final String XPERT_MASTER_KEY = "xpert_master";
     private static final String USER_MASTER_KEY = "user_master";
+    private static final String XPERT_SLUG_KEY = "xpert_slug";
+    private static final String LAST_QUESTIONID_KEY = "last_questionId";
     private static final String NAME_KEY = "name";
     private static final String PROFESSION_KEY = "profession";
     private static final String BUCKET_3_KEY = "bucket3";
@@ -99,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String FIRST_NAME_KEY = "first_name";
     private static final String LAST_NAME_KEY = "last_name";
     private static final String PROFILE_PIC_KEY = "profile_pic";
-    private static final String GENDER_KEY = "gender";
     private static final String SENDER_KEY = "sender";
     private static final String SENDER_ID_KEY = "sender_id";
     private static final String SESSION_ID_KEY = "session_id";
@@ -289,8 +290,8 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("userInterestAbout" + xpertId, prof);
                 editor.apply();
-                createSessionId(prof);
-                uploadUserInterest(prof);
+                createSessionId("Profession");
+                uploadUserInterest("Profession");
 
                 String s1 = "Hi " + userFirstName;
                 writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
@@ -310,8 +311,8 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("userInterestAbout" + xpertId, inters);
                 editor.apply();
-                createSessionId(inters);
-                uploadUserInterest(inters);
+                createSessionId("Interest");
+                uploadUserInterest("Interest");
 
                 String s1 = "Hi " + userFirstName;
                 writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
@@ -331,8 +332,8 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("userInterestAbout" + xpertId, "fan");
                 editor.apply();
-                createSessionId("fan");
-                uploadUserInterest("fan");
+                createSessionId("Fan");
+                uploadUserInterest("Fan");
 
                 String s1 = "Hi " + userFirstName;
                 writeMsgInDB("xpert", "text", s1, "reply", 0, 0);
@@ -348,7 +349,9 @@ public class MainActivity extends AppCompatActivity {
 
         Map<String, Object> docData = new HashMap<>();
         docData.put(XPERT_KEY, db.document(XPERT_MASTER_KEY + "/" + xpertId));
-        docData.put(XPERT_PROFILE_IMAGE_KEY, null);
+        docData.put(XPERT_PROFILE_IMAGE_KEY, xpertImage);
+        docData.put(XPERT_SLUG_KEY, xpertId);
+        docData.put(LAST_QUESTIONID_KEY, 0);
         docData.put(USER_PERSONA_KEY, userInterest);
         docData.put(ACTIVE_KEY, true);
         docData.put(DATE_KEY, FieldValue.serverTimestamp());

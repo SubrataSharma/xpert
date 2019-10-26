@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pabitrarista.chatdialog.R;
@@ -37,9 +38,10 @@ public class RegisterActivity extends AppCompatActivity {
     EditText editTextFirstName, editTextLastName;
     Spinner dropdownGender, dropdownAge;
 
-    String firstName, lastName, gender, age, Uid;
+    String firstName, lastName, userIdPhone, gender, age, Uid;
 
     FirebaseAuth mAuth;
+    FirebaseUser mUser;
     FirebaseFirestore db;
 
     private SharedPreferences preferences;
@@ -47,9 +49,11 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String USER_MASTER_KEY = "user_master";
     private static final String FIRST_NAME_KEY = "first_name";
     private static final String LAST_NAME_KEY = "last_name";
-    private static final String GENDER_KEY = "gender";
-    private static final String AGE_KEY = "age";
-    private static final String TIMESTAMP_KEY = "timestamp";
+    private static final String AUTH_ID_KEY = "auth_id";
+    private static final String GENDER_KEY = "Gender";
+    private static final String AGE_KEY = "Age";
+    private static final String PHONE_NO_KEY = "phone_no";
+    private static final String REGISTER_DATE_KEY = "register_date";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +69,11 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
 
                 Map<String, Object> docData = new HashMap<>();
-                docData.put(TIMESTAMP_KEY, FieldValue.serverTimestamp());
+                docData.put(REGISTER_DATE_KEY, FieldValue.serverTimestamp());
                 docData.put(FIRST_NAME_KEY, firstName);
                 docData.put(LAST_NAME_KEY, lastName);
+                docData.put(PHONE_NO_KEY, userIdPhone);
+                docData.put(AUTH_ID_KEY, Uid);
                 docData.put(GENDER_KEY, gender);
                 docData.put(AGE_KEY, Integer.parseInt(age));
 
@@ -139,6 +145,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         Uid = mAuth.getUid();
+        mUser = mAuth.getCurrentUser();
+        try {
+            userIdPhone = mUser.getPhoneNumber();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         db = FirebaseFirestore.getInstance();
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
