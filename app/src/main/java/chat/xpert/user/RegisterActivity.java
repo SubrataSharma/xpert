@@ -36,9 +36,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     AppCompatTextView termsTextView;
     EditText editTextFirstName, editTextLastName;
-    Spinner dropdownGender, dropdownAge;
+    Spinner dropdownGender, dropdownAge, dropdownProfession;
 
-    String firstName, lastName, userIdPhone, gender, age, Uid;
+    String firstName, lastName, userIdPhone, gender, age, profession, Uid;
 
     FirebaseAuth mAuth;
     FirebaseUser mUser;
@@ -52,6 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String AUTH_ID_KEY = "auth_id";
     private static final String GENDER_KEY = "Gender";
     private static final String AGE_KEY = "Age";
+    private static final String PROFESSION_KEY = "Profession";
     private static final String PHONE_NO_KEY = "phone_no";
     private static final String REGISTER_DATE_KEY = "register_date";
 
@@ -65,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
         findViewById(R.id.register_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!validateName() || !validGender() || !validAge())
+                if (!validateName() || !validGender() || !validAge() || !validProfession())
                     return;
 
                 Map<String, Object> docData = new HashMap<>();
@@ -76,6 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
                 docData.put(AUTH_ID_KEY, Uid);
                 docData.put(GENDER_KEY, gender);
                 docData.put(AGE_KEY, Integer.parseInt(age));
+                docData.put(PROFESSION_KEY, profession);
 
                 db.collection(USER_MASTER_KEY)
                         .document(Uid)
@@ -105,8 +107,8 @@ public class RegisterActivity extends AppCompatActivity {
         editTextLastName = findViewById(R.id.register_last_name);
 
         dropdownGender = findViewById(R.id.register_spinner_gender);
-        String[] itemsGender = new String[]{"GENDER", "MALE", "FEMALE"};
-        ArrayAdapter<String> adapterGender = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsGender);
+        String[] itemsGender = new String[]{"Gender", "Male", "Female"};
+        ArrayAdapter<String> adapterGender = new ArrayAdapter<>(this, R.layout.layout_spinner_item_view, itemsGender);
         dropdownGender.setAdapter(adapterGender);
         dropdownGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -122,19 +124,35 @@ public class RegisterActivity extends AppCompatActivity {
 
         dropdownAge = findViewById(R.id.register_spinner_age);
         String[] itemsAge = new String[91];
-        itemsAge[0] = "AGE";
+        itemsAge[0] = "Age";
         int num = 10;
         int i = 1;
         while (num <= 99) {
             itemsAge[i++] = Integer.toString(num);
             num++;
         }
-        ArrayAdapter<String> adapterAge = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsAge);
+        ArrayAdapter<String> adapterAge = new ArrayAdapter<>(this, R.layout.layout_spinner_item_view, itemsAge);
         dropdownAge.setAdapter(adapterAge);
         dropdownAge.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 age = (String) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        dropdownProfession = findViewById(R.id.register_spinner_profession);
+        String[] itemsProfession = new String[]{"I am currently", "Studying", "Working", "Retired", "Other"};
+        ArrayAdapter<String> adapterProfession = new ArrayAdapter<>(this, R.layout.layout_spinner_item_view, itemsProfession);
+        dropdownProfession.setAdapter(adapterProfession);
+        dropdownProfession.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                profession = (String) parent.getItemAtPosition(position);
             }
 
             @Override
@@ -217,7 +235,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean validGender() {
-        if (gender.equals("GENDER")) {
+        if (gender.equalsIgnoreCase("Gender")) {
             Toast.makeText(this, "Select gender", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -225,8 +243,16 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean validAge() {
-        if (age.equals("AGE")) {
+        if (age.equalsIgnoreCase("Age")) {
             Toast.makeText(this, "Select age", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validProfession() {
+        if (profession.equalsIgnoreCase("I am currently")) {
+            Toast.makeText(this, "Select profession", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

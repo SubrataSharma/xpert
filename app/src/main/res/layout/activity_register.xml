@@ -100,29 +100,140 @@
         android:background="@color/white" />
 
     <LinearLayout
+        android:id="@+id/spinner_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/register_linear_layout"
         android:layout_alignStart="@+id/register_linear_layout"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="25dp"
-        android:gravity="center"
         android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/register_spinner_gender"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/icon_age"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icons_age" />
+
+            <Spinner
+                android:id="@+id/register_spinner_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/icon_age"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown"
+                android:theme="@style/Spinner" />
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/icon_expand_arrow" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignBottom="@+id/register_spinner_age"
+                android:layout_marginTop="1dp"
+                android:background="@color/white" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/icon_gender"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icons_gender" />
+
+            <Spinner
+                android:id="@+id/register_spinner_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/icon_gender"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown"
+                android:theme="@style/Spinner" />
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/icon_expand_arrow" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignBottom="@+id/register_spinner_gender"
+                android:layout_marginTop="1dp"
+                android:background="@color/white" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner_linear_layout"
+        android:layout_alignStart="@+id/register_linear_layout"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp">
+
+        <ImageView
+            android:id="@+id/icon_briefcase"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icons_briefcase" />
 
         <Spinner
-            android:id="@+id/register_spinner_age"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
-    </LinearLayout>
+            android:id="@+id/register_spinner_profession"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/icon_briefcase"
+            android:background="@android:color/transparent"
+            android:spinnerMode="dropdown"
+            android:theme="@style/Spinner" />
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/icon_expand_arrow" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignBottom="@+id/register_spinner_profession"
+            android:layout_marginTop="1dp"
+            android:background="@color/white" />
+    </RelativeLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/register_terms"
