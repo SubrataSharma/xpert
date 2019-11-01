@@ -127,6 +127,7 @@ public class AskScreen2Activity extends AppCompatActivity {
         bucket2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                bucketArrayList.clear();
                 if (task.isSuccessful()) {
                     String str;
                     for (QueryDocumentSnapshot document : task.getResult()) {
@@ -135,10 +136,10 @@ public class AskScreen2Activity extends AppCompatActivity {
                     }
 
                     Set<String> set = new HashSet<>(bucketArrayList);
-                    bucketArrayList.clear();
                     bucketArrayList.addAll(set);
 
-                    bucketViewAdapter = new BucketViewAdapter(AskScreen2Activity.this, bucketArrayList);
+                    bucketViewAdapter = new BucketViewAdapter(AskScreen2Activity.this, bucketArrayList
+                            ,getApplicationContext());
                     bucketRecyclerView.setAdapter(bucketViewAdapter);
                     int bucketRecyclerViewPosition = bucketArrayList.size() - 1;
                     bucketRecyclerView.scrollToPosition(bucketRecyclerViewPosition);

@@ -105,7 +105,7 @@ public class OtpActivity extends AppCompatActivity {
                             button.setEnabled(true);
                             //btResend.setEnabled(true);
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), "Verification id not received", Toast.LENGTH_SHORT).show();

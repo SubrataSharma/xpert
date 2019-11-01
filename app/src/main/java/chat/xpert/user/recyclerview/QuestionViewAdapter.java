@@ -35,13 +35,13 @@ public class QuestionViewAdapter extends RecyclerView.Adapter<QuestionViewHolder
     public void onBindViewHolder(@NonNull final QuestionViewHolder holder, final int position) {
         holder.textView.setText(arrayList.get(position));
 
-        if (backgroundImage == 0) {
+        /*if (backgroundImage == 0) {
             holder.textView.setBackgroundResource(R.drawable.image_speech_bubble_2);
             backgroundImage = 1;
         } else if (backgroundImage == 1) {
             holder.textView.setBackgroundResource(R.drawable.image_speech_bubble_reverse_2);
             backgroundImage = 0;
-        }
+        }*/
 
         holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override

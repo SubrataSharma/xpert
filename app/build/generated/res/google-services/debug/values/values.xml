@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">145930653143-a2s021pal22pk5vsgvg53u1fttq49h36.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://xpert-213209.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">145930653143</string>
+    <string name="google_api_key" translatable="false">AIzaSyAVBS7lX8VUFdvWjK01BeYTg7JiTqWYIl8</string>
+    <string name="google_app_id" translatable="false">1:145930653143:android:4b11ade9ee3365d0</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAVBS7lX8VUFdvWjK01BeYTg7JiTqWYIl8</string>
+    <string name="google_storage_bucket" translatable="false">xpert-213209.appspot.com</string>
+    <string name="project_id" translatable="false">xpert-213209</string>
+</resources>
